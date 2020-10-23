@@ -1,0 +1,79 @@
+#!/bin/bash
+declare -a FUNCBOTS PERFBOTS
+FUNCBOTS=(identity network image volume compute)
+FUNCBOT_DIR=$(dirname $(realpath $0))/../funcbot
+
+list_funcbot () {
+    for b in ${FUNCBOTS[@]}; do
+        echo $b
+    done
+}
+run_funcbot () {
+    # check the args
+    declare -a suites
+    [[ $# -ne 0 ]] && suites=($@) || suites=(${FUNCBOTS[@]})
+    echo ${suites[@]}
+    for i in ${suites[@]}; do
+        if [[ ! " ${FUNCBOTS[@]} " =~ " $i " ]]; then
+            echo "Abort: $i is not a test suite."
+            list_funcbot
+            exit 1
+        fi
+    done
+    # Okay. Let's go.
+    cd $FUNCBOT_DIR
+    robot   --exitonfailure \
+            --exitonerror \
+            --console verbose \
+            --consolecolors auto \
+            --outputdir output \
+            "${suites[@]}"
+}
+USAGE () {
+    echo "USAGE: $0 {-h|-e|-r|-t|-v}" 1>&2
+    echo ""
+    echo " -h --help                            Display this help message."
+    echo " -r --run-funcbot [TEST_SUITE]...     Run funcbot."
+    echo " -l --list-funcbot                    List funcbot test suites."
+    echo " -R --run-perfbot [TEST_SUITE]...     Run perfbot."
+    echo " -L --list-perfbot                    List perfbot test suites."
+}
+if [ $# -lt 1 ]; then
+    USAGE
+    exit 0
+fi
+
+OPT=$1
+shift
+# Get argument
+while true
+do
+    case "$OPT" in
+        -h | --help)
+            USAGE
+            break
+            ;;
+        -r | --run-funcbot)
+            run_funcbot "$@"
+            break
+            ;;
+        -l | --list-funcbot)
+            list_funcbot
+            break
+            ;;
+        -R | --run-perfbot)
+            run_perfbot "$@"
+            break
+            ;;
+        -L | --list-perfbot)
+            list_perfbot
+            break
+            ;;
+        *)
+            echo Error: unknown option: "$OPT" 1>&2
+            echo " "
+            USAGE
+            break
+            ;;
+    esac
+done

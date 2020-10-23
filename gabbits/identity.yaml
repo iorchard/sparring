@@ -1,0 +1,77 @@
+defaults:
+    verbose: True
+    request_headers:
+        x-auth-token: $ENVIRON['SERVICE_TOKEN']
+
+tests:
+- name: connect to identity service
+  GET: /
+  status: 200
+  response_json_paths:
+    $.version.links[?rel = "self"].href: /$ENVIRON['IDENTITY_SERVICE']/
+    $.version.status: stable
+
+#
+# domain
+#
+- name: list domains
+  GET: /domains
+  status: 200
+  request_headers:
+    content-type: application/json
+  response_store_value:
+    $.domains[0].id: domain_id
+
+- name: get domain info
+  GET: /domains/$ENVIRON['DOMAIN_ID']
+  status: 200
+
+#
+# project
+#
+- name: list projects
+  GET: /projects
+  status: 200
+
+- name: create project
+  POST: /projects
+  request_headers:
+    content-type: application/json
+  data:
+    project:
+      name: $ENVIRON['TEST_PROJECT_NAME']
+      description: $ENVIRON['TEST_PROJECT_DESC']
+  status: 201
+  response_store_value:
+    $.project.id: test_project_id
+
+- name: show project info
+  GET: /projects/$ENVIRON['TEST_PROJECT_ID']
+  status: 200
+
+- name: rename project
+  PATCH: /projects/$ENVIRON['TEST_PROJECT_ID']
+  request_headers:
+    content-type: application/json
+  data:
+    project:
+      name: $ENVIRON['TEST_PROJECT_NEWNAME']
+  status: 200
+  response_json_paths:
+    $.project.name: $ENVIRON['TEST_PROJECT_NEWNAME']
+
+- name: delete project
+  DELETE: /projects/$ENVIRON['TEST_PROJECT_ID']
+  status: 204
+
+- name: project is gone
+  GET: /projects/$ENVIRON['TEST_PROJECT_ID']
+  status: 404
+
+- name: clean project
+  DELETE: /projects/$ENVIRON['TEST_PROJECT_ID']
+  status: 204 || 404
+
+#
+#
+#

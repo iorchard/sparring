@@ -1,0 +1,190 @@
+defaults:
+  verbose: True
+  request_headers:
+    x-auth-token: $ENVIRON['SERVICE_TOKEN']
+
+tests:
+- name: connect to network service
+  GET: $ENVIRON['NETWORK_SERVICE']/
+  redirects: True
+  status: 200
+
+#
+# network
+#
+- name: create network
+  POST: /networks
+  request_headers:
+    content-type: application/json
+  data:
+    network:
+      name: $ENVIRON['TEST_NETWORK_NAME']
+      admin_state_up: true
+  status: 201
+  response_store_value:
+    $.network.id: test_network_id
+
+- name: show network info
+  GET: /networks/$ENVIRON['TEST_NETWORK_ID']
+  status: 200
+
+- name: created network is in network list
+  GET: /networks?id=$ENVIRON['TEST_NETWORK_ID']
+  status: 200
+
+- name: rename network name
+  PUT: /networks/$ENVIRON['TEST_NETWORK_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    network:
+      name: $ENVIRON['TEST_NETWORK_NEWNAME']
+  response_json_paths:
+    $.network.name: $ENVIRON['TEST_NETWORK_NEWNAME']
+
+- name: create subnet
+  POST: /subnets
+  request_headers:
+    content-type: application/json
+  data:
+    subnet:
+      name: $ENVIRON['TEST_SUBNET_NAME']
+      network_id: $ENVIRON['TEST_NETWORK_ID']
+      ip_version: 4
+      cidr: $ENVIRON['TEST_SUBNET_CIDR']
+  status: 201
+  response_store_value:
+    $.subnet.id: test_subnet_id
+
+- name: show subnet info
+  GET: /subnets/$ENVIRON['TEST_SUBNET_ID']
+  status: 200
+
+- name: created subnet is in subnet list
+  GET: /subnets?id=$ENVIRON['TEST_SUBNET_ID']
+  status: 200
+
+- name: rename subnet name
+  PUT: /subnets/$ENVIRON['TEST_SUBNET_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    subnet:
+      name: $ENVIRON['TEST_SUBNET_NEWNAME']
+  response_json_paths:
+    $.subnet.name: $ENVIRON['TEST_SUBNET_NEWNAME']
+
+- name: delete network
+  DELETE: /networks/$ENVIRON['TEST_NETWORK_ID']
+  status: 204
+
+- name: delete subnet
+  DELETE: /subnets/$ENVIRON['TEST_SUBNET_ID']
+  status: 204
+
+#
+# router
+#
+- name: create router
+  POST: /routers
+  request_headers:
+    content-type: application/json
+  data:
+    router:
+      name: $ENVIRON['TEST_ROUTER_NAME']
+  status: 201
+  response_store_value:
+    $.router.id: test_router_id
+
+- name: show router info
+  GET: /routers/$ENVIRON['TEST_ROUTER_ID']
+  status: 200
+
+- name: created router is in router list
+  GET: /routers?id=$ENVIRON['TEST_ROUTER_ID']
+  status: 200
+
+- name: add interface to router
+  PUT: /routers/$ENVIRON['TEST_ROUTER_ID']/add_router_interface
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    subnet_id: $ENVIRON['TEST_SUBNET_ID']
+  response_store_value:
+    $.port_id: test_router_port_id
+  
+- name: rename router name
+  PUT: /routers/$ENVIRON['TEST_ROUTER_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    router:
+      name: $ENVIRON['TEST_ROUTER_NEWNAME']
+  response_json_paths:
+    $.router.name: $ENVIRON['TEST_ROUTER_NEWNAME']
+
+#
+# port
+#
+- name: create port
+  POST: /ports
+  request_headers:
+    content-type: application/json
+  data:
+    port:
+      name: $ENVIRON['TEST_PORT_NAME']
+      network_id: $ENVIRON['TEST_NETWORK_ID']
+  status: 201
+  response_store_value:
+    $.port.id: test_port_id
+
+- name: show port info
+  GET: /ports/$ENVIRON['TEST_PORT_ID']
+  status: 200
+
+- name: created port is in port list
+  GET: /ports?id=$ENVIRON['TEST_PORT_ID']
+  status: 200
+
+- name: rename port name
+  PUT: /ports/$ENVIRON['TEST_PORT_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    port:
+      name: $ENVIRON['TEST_PORT_NEWNAME']
+  response_json_paths:
+    $.port.name: $ENVIRON['TEST_PORT_NEWNAME']
+
+
+#
+# clean resources
+#
+- name: clean port
+  DELETE: /ports/$ENVIRON['TEST_ROUTER_ID']
+  status: 204 || 404
+
+- name: clean router interface
+  PUT: /routers/$ENVIRON['TEST_ROUTER_ID']/remove_router_interface
+  status: 200 || 404
+  request_headers:
+    content-type: application/json
+  data:
+    subnet_id: $ENVIRON['TEST_SUBNET_ID']
+
+- name: clean router
+  DELETE: /routers/$ENVIRON['TEST_ROUTER_ID']
+  status: 204 || 404
+
+- name: clean network
+  DELETE: /networks/$ENVIRON['TEST_NETWORK_ID']
+  status: 204 || 404
+
+- name: clean subnet
+  DELETE: /subnets/$ENVIRON['TEST_SUBNET_ID']
+  status: 204 || 404
