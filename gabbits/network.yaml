@@ -161,12 +161,69 @@ tests:
   response_json_paths:
     $.port.name: $ENVIRON['TEST_PORT_NEWNAME']
 
+#
+# floating ip
+#
+- name: create floating ip
+  POST: /floatingips
+  request_headers:
+    content-type: application/json
+  data:
+    floatingip:
+      floating_network_id: $ENVIRON['PUBLIC_NETWORK_ID']
+      description: "sparring floating ip"
+  status: 201
+  response_store_value:
+    $.floatingip.id: test_floatingip_id
+
+- name: show floating ip info
+  GET: /floatingips/$ENVIRON['TEST_FLOATINGIP_ID']
+  status: 200
+
+- name: created floating ip is in floating ip list
+  GET: /floatingips?id=$ENVIRON['TEST_FLOATINGIP_ID']
+  status: 200
+
+- name: update floating ip description
+  PUT: /floatingips/$ENVIRON['TEST_FLOATINGIP_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    floatingip:
+      description: "sparring floating ip - new"
+  response_json_paths:
+    $.floatingip.description: "sparring floating ip - new"
+
+#
+# quota
+#
+- name: update network quota
+  PUT: /quotas/$ENVIRON['TEST_PROJECT_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    quota:
+      network: $ENVIRON['TEST_NETWORK_QUOTA']
+  response_json_paths:
+    $.quota.network: $ENVIRON['TEST_NETWORK_QUOTA']
+
+- name: network quota is set
+  GET: /quotas/$ENVIRON['TEST_PROJECT_ID']
+  status: 200
+  response_json_paths:
+    $.quota.network: $ENVIRON['TEST_NETWORK_QUOTA']
 
 #
 # clean resources
 #
+- name: clean floating ip
+  DELETE: /floatingips/$ENVIRON['TEST_FLOATINGIP_ID']
+  status: 204 || 404
+
 - name: clean port
-  DELETE: /ports/$ENVIRON['TEST_ROUTER_ID']
+  DELETE: /ports/$ENVIRON['TEST_PORT_ID']
   status: 204 || 404
 
 - name: clean router interface

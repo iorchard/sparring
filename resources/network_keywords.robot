@@ -8,12 +8,18 @@ Clean the network if test failed
 
 Clean network resources
   # get info from txt file
+  ${rc} =   Run And Return Rc   ls ${TEMPDIR}/floatingip.txt
+  ${test_floatingip_id} =  Run Keyword If     ${rc} == 0
+  ...   Get File    ${TEMPDIR}/floatingip.txt
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/port.txt
   ${test_port_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/port.txt
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/router.txt
   ${test_router_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/router.txt
+  ${rc} =   Run And Return Rc   ls ${TEMPDIR}/public_subnet.txt
+  ${test_public_subnet_id} =  Run Keyword If     ${rc} == 0
+  ...   Get File    ${TEMPDIR}/public_subnet.txt
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/subnet.txt
   ${test_subnet_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/subnet.txt
@@ -21,6 +27,8 @@ Clean network resources
   ${test_network_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/network.txt
 
+  Run Keyword And Ignore Error  clean floating ip   url=${NETWORK_SERVICE}
+  ...                           TEST_FLOATINGIP_ID=${test_floatingip_id}
   Run Keyword And Ignore Error  clean port      url=${NETWORK_SERVICE}
   ...                           TEST_PORT_ID=${test_port_id}
   Run Keyword And Ignore Error  clean router interface  url=${NETWORK_SERVICE}
@@ -28,6 +36,8 @@ Clean network resources
   ...                           TEST_SUBNET_ID=${test_subnet_id}
   Run Keyword And Ignore Error  clean router    url=${NETWORK_SERVICE}
   ...                           TEST_ROUTER_ID=${test_router_id}
+  Run Keyword And Ignore Error  clean subnet    url=${NETWORK_SERVICE}
+  ...                           TEST_SUBNET_ID=${test_public_subnet_id}
   Run Keyword And Ignore Error  clean subnet    url=${NETWORK_SERVICE}
   ...                           TEST_SUBNET_ID=${test_subnet_id}
   Run Keyword And Ignore Error  clean network   url=${NETWORK_SERVICE}
@@ -116,9 +126,29 @@ Rename the port name
 #
 # floating ip
 #
+Create a floating ip
+  &{RESP} =     create floating ip     url=${NETWORK_SERVICE}
+  ...                           PUBLIC_NETWORK_ID=${PUBLIC_NETWORK_ID}
+  Set Environment Variable      TEST_FLOATINGIP_ID  ${RESP.test_floatingip_id}
+  Create File    ${TEMPDIR}/floatingip.txt   ${RESP.test_floatingip_id}
+
+Show the floating ip info
+  show floating ip info         url=${NETWORK_SERVICE}
+
+Check if the created floating ip is in floating ip list
+  created floating ip is in floating ip list    url=${NETWORK_SERVICE}
+
+Update the floating ip description
+  update floating ip description       url=${NETWORK_SERVICE}
 
 #
-# network quota
+# quota
 #
+Update the network quota
+  update network quota      url=${NETWORK_SERVICE}
+  ...                       TEST_NETWORK_QUOTA=${TEST_NETWORK_QUOTA}
 
+Check if the network quota is set
+  network quota is set      url=${NETWORK_SERVICE}
+  ...                       TEST_NETWORK_QUOTA=${TEST_NETWORK_QUOTA}
 
