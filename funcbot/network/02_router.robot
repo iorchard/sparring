@@ -11,23 +11,23 @@ Library         GabbiLibrary    ${IDENTITY_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 Create a router and show the router info
-  [Tags]    network
+  [Tags]    network     critical
   Given Network service is available
   When Create a router
   Then Show the router info
 
 Check if the created router is in router list
-  [Tags]    network
+  [Tags]    network     critical
   Given Network service is available
   When Check if the created router is in router list
 
 Add an interface to the router
-  [Tags]    network
+  [Tags]    network     critical
   Given Network service is available
   When Add an interface to the router
 
 Rename the router name
-  [Tags]    network
+  [Tags]    network     critical
   Given Network service is available
   When Rename the router name
 

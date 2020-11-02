@@ -11,18 +11,18 @@ Library         GabbiLibrary    ${IDENTITY_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 Create a port and show the port info
-  [Tags]    network
+  [Tags]    network     critical
   Given Network service is available
   When Create a port
   Then Show the port info
 
 Check if the created port is in port list
-  [Tags]    network
+  [Tags]    network     critical
   Given Network service is available
   When Check if the created port is in port list
 
 Rename the port name
-  [Tags]    network
+  [Tags]    network     critical
   Given Network service is available
   When Rename the port name
 

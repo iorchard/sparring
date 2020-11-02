@@ -9,23 +9,23 @@ Library         GabbiLibrary    ${IDENTITY_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 List all projects
-  [Tags]    identity
+  [Tags]    identity    critical
   Given Identity service is available
   When List all projects
 
 Create a project and show the project info
-  [Tags]    identity
+  [Tags]    identity    critical
   Given Identity service is available
   When Create a project
   Then Show the project info
 
 Rename the project
-  [Tags]    identity 
+  [Tags]    identity    critical
   Given Identity service is available
   When Rename the project
 
 Delete the project
-  [Tags]    identity 
+  [Tags]    identity    critical
   Given Identity service is available
   When Delete the project
   Then The project is gone

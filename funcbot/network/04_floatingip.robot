@@ -17,7 +17,7 @@ Create a floating ip and show the floating ip info
   Then Show the floating ip info
 
 Check if the created floating ip is in floating ip list
-  [Tags]    network
+  [Tags]    network     
   Given Network service is available
   When Check if the created floating ip is in floating ip list
 

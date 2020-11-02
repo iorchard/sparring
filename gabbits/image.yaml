@@ -1,0 +1,64 @@
+defaults:
+  verbose: True
+  request_headers:
+    x-auth-token: $ENVIRON['SERVICE_TOKEN']
+
+tests:
+- name: connect to image service
+  GET: $ENVIRON['IMAGE_SERVICE_VERSIONS']
+  status: 200
+
+#
+# image
+#
+- name: create image
+  POST: /images
+  request_headers:
+    content-type: application/json
+  data:
+    name: $ENVIRON['TEST_IMAGE_NAME']
+    container_format: $ENVIRON['TEST_IMAGE_CONTAINER_FORMAT']
+    disk_format: $ENVIRON['TEST_IMAGE_DISK_FORMAT']
+  status: 201
+  response_json_paths:
+    $.status: queued
+  response_store_value:
+    $.id: test_image_id
+
+- name: upload image data
+  PUT: /images/$ENVIRON['TEST_IMAGE_ID']/file
+  request_headers:
+    content-type: application/octet-stream
+  status: 204
+  data: <@cirros.img
+
+- name: created image is in image list and active
+  GET: /images
+  status: 200
+  response_json_paths:
+    $.images[?name = "sparring-image"].status: active
+
+- name: update image name
+  PATCH: /images/$ENVIRON['TEST_IMAGE_ID']
+  request_headers:
+    content-type: application/openstack-images-v2.1-json-patch
+  data: <@update_image.json
+  status: 200
+  response_json_paths:
+    $.name: $ENVIRON['TEST_IMAGE_NAME']-new
+
+- name: delete image
+  DELETE: /images/$ENVIRON['TEST_IMAGE_ID']
+  status: 204
+
+- name: image is gone
+  GET: /images/$ENVIRON['TEST_IMAGE_ID']
+  status: 404
+
+#
+# clean resources
+#
+- name: clean image
+  DELETE: /images/$ENVIRON['TEST_IMAGE_ID']
+  status: 204 || 404
+

@@ -3,11 +3,11 @@
 #
 # Service Endpoint
 #
-${COMPUTE_SERVICE}      http://nova.openstack.svc.cluster.local:8080/v2.1
 ${IDENTITY_SERVICE}     http://keystone.openstack.svc.cluster.local:8080/v3
 ${NETWORK_SERVICE}      http://neutron.openstack.svc.cluster.local:8080/v2.0
-${VOLUME_SERVICE}       http://cinder.openstack.svc.cluster.local:8080/v3
 ${IMAGE_SERVICE}        http://glance.openstack.svc.cluster.local:8080/v2
+${VOLUME_SERVICE}       http://cinder.openstack.svc.cluster.local:8080/v3
+${COMPUTE_SERVICE}      http://nova.openstack.svc.cluster.local:8080/v2.1
 
 #
 # adminrc
@@ -40,4 +40,16 @@ ${TEST_SUBNET_CIDR}     172.24.1.0/24
 ${TEST_ROUTER_NAME}     sparring-router
 ${TEST_PORT_NAME}       sparring-port
 ${TEST_NETWORK_QUOTA}   10
+
+#
+# image test
+# 
+# We use cirros image. 
+# Try to download it from the internet if ${TEST_IMAGE_FILE} is not found.
+# If there is no internet, put the image ${TEST_IMAGE_FILE} manually.
+${TEST_IMAGE_NAME}                  sparring-image
+${TEST_IMAGE_CONTAINER_FORMAT}      bare
+${TEST_IMAGE_DISK_FORMAT}           qcow2
+${TEST_IMAGE_URL}                   https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
+${TEST_IMAGE_FILE}                  /tmp/cirros.img
 

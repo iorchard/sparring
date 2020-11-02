@@ -24,6 +24,7 @@ run_funcbot () {
     cd $FUNCBOT_DIR
     robot   --exitonfailure \
             --exitonerror \
+            --critical critical \
             --console verbose \
             --consolecolors auto \
             --outputdir output \

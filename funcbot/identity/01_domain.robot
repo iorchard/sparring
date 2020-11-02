@@ -14,6 +14,6 @@ List all domains
   When List all domains
 
 Get the domain info
-  [Tags]    identity 
+  [Tags]    identity    critical
   Given Identity service is available
   When Get the domain info
