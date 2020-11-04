@@ -50,6 +50,15 @@ ${TEST_NETWORK_QUOTA}   10
 ${TEST_IMAGE_NAME}                  sparring-image
 ${TEST_IMAGE_CONTAINER_FORMAT}      bare
 ${TEST_IMAGE_DISK_FORMAT}           qcow2
+# Go to https://download.cirros-cloud.net/ and get the url of image file.
 ${TEST_IMAGE_URL}                   https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img
 ${TEST_IMAGE_FILE}                  /tmp/cirros.img
+
+#
+# volume test
+#
+# admin project id used by volume test
+${PROJECT_ID}               00bce98645894a8c9bee220b1a249a7b
+${TEST_VOLUME_TYPE_NAME}    sparring-volume-type
+${VOLUME_BACKEND_NAME}      rbd1
 

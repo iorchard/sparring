@@ -1,0 +1,72 @@
+defaults:
+  verbose: True
+  request_headers:
+    x-auth-token: $ENVIRON['SERVICE_TOKEN']
+
+tests:
+- name: connect to volume service
+  GET: $ENVIRON['VOLUME_SERVICE']/
+  redirects: True
+  status: 200
+  response_json_paths:
+    $.versions[*].links[?rel = "self"].href: /$ENVIRON['VOLUME_SERVICE']/
+    $.versions[*].status: CURRENT
+
+#
+# volume type
+#
+- name: create volume type
+  POST: /$ENVIRON['PROJECT_ID']/types
+  request_headers:
+    content-type: application/json
+  data:
+    volume_type:
+      name: $ENVIRON['TEST_VOLUME_TYPE_NAME']
+      os-volume-type-access:is_public: false
+  status: 200
+  response_store_value:
+    $.volume_type.id: test_volume_type_id
+
+- name: set volume backend of volume type
+  POST: /$ENVIRON['PROJECT_ID']/types/$ENVIRON['TEST_VOLUME_TYPE_ID']/extra_specs
+  request_headers:
+    content-type: application/json
+  data:
+    extra_specs:
+      volume_backend_name: $ENVIRON['VOLUME_BACKEND_NAME']
+  status: 200
+
+- name: show volume type info
+  GET: /$ENVIRON['PROJECT_ID']/types/$ENVIRON['TEST_VOLUME_TYPE_ID']
+  status: 200
+  response_json_paths:
+    $.volume_type["os-volume-type-access:is_public"]: false
+    $.volume_type.extra_specs.volume_backend_name: $ENVIRON['VOLUME_BACKEND_NAME']
+
+- name: created volume type is in volume type list
+  GET: /$ENVIRON['PROJECT_ID']/types?is_public=false
+  status: 200
+  response_json_paths:
+    $.volume_types[?id = "$ENVIRON['TEST_VOLUME_TYPE_ID']"].name: $ENVIRON['TEST_VOLUME_TYPE_NAME']
+
+- name: add volume type to test project
+  POST: /$ENVIRON['PROJECT_ID']/types/$ENVIRON['TEST_VOLUME_TYPE_ID']/action
+  status: 202
+  request_headers:
+    content-type: application/json
+  data:
+    addProjectAccess:
+      project: $ENVIRON['TEST_PROJECT_ID']
+
+- name: test project has access to volume type
+  GET: /$ENVIRON['PROJECT_ID']/types/$ENVIRON['TEST_VOLUME_TYPE_ID']/os-volume-type-access
+  status: 200
+  response_json_paths:
+    $.volume_type_access[*].project_id: $ENVIRON['TEST_PROJECT_ID']
+
+#
+# clean resources
+#
+- name: clean volume type
+  DELETE: /$ENVIRON['PROJECT_ID']/types/$ENVIRON['TEST_VOLUME_TYPE_ID']
+  status: 202
