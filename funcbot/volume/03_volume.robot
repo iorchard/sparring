@@ -1,5 +1,5 @@
 *** Settings ***
-Suite Setup     User gets auth token
+Suite Setup     User gets auth test project scoped token
 Suite Teardown  Clean the volume resources if test failed
 
 Resource        ${EXECDIR}/../resources/common_resources.robot
@@ -10,27 +10,25 @@ Resource        ${EXECDIR}/../resources/volume_keywords.robot
 Library         GabbiLibrary    ${VOLUME_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
-Create a volume type and show the volume type info
+Create a volume and show the volume info
   [Tags]    volume     critical
   Given Volume service is available
-  and Create a project
-  and Assign the admin role to admin user on project
-  When Create a volume type 
-  and Set the volume backend of the volume type
-  Then Show the volume type info
+  When Create a volume
+  and Check if the volume is available
+  Then Show the volume info
 
-Check if the created volume type is in volume type list
+Check if the created volume is in volume list
   [Tags]    volume     critical
   Given Volume service is available
-  When Check if the created volume type is in volume type list
+  When Check if the created volume is in volume list
 
-Add the volume type to test project
+Resize the volume
+  [Tags]    volume
+  Given Volume service is available
+  When Resize the volume
+  Then Check if the volume is resized
+
+Update the volume name
   [Tags]    volume     critical
   Given Volume service is available
-  When Add the volume type to test project
-
-Check if the test project has an access to the volume type
-  [Tags]    volume     critical
-  Given Volume service is available
-  When Check if the test project has an access to the volume type
-
+  When Update the volume name

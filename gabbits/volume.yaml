@@ -65,8 +65,91 @@ tests:
     $.volume_type_access[*].project_id: $ENVIRON['TEST_PROJECT_ID']
 
 #
+# volume
+#
+- name: create volume
+  POST: /$ENVIRON['TEST_PROJECT_ID']/volumes
+  request_headers:
+    content-type: application/json
+  data:
+    volume:
+      name: $ENVIRON['TEST_VOLUME_NAME']
+      size: $ENVIRON['TEST_VOLUME_SIZE']
+      volume_type: $ENVIRON['TEST_VOLUME_TYPE_ID']
+  status: 202
+  response_store_value:
+    $.volume.id: test_volume_id
+
+- name: check volume is available
+  GET: /$ENVIRON['TEST_PROJECT_ID']/volumes/$ENVIRON['TEST_VOLUME_ID']
+  status: 200
+  response_json_paths:
+      $.volume.status: available
+
+- name: show volume info
+  GET: /$ENVIRON['TEST_PROJECT_ID']/volumes/$ENVIRON['TEST_VOLUME_ID']
+  status: 200
+  response_json_paths:
+    $.volume.name: $ENVIRON['TEST_VOLUME_NAME']
+
+- name: created volume is in volume list
+  GET: /$ENVIRON['TEST_PROJECT_ID']/volumes
+  status: 200
+  response_json_paths:
+    $.volumes[?id = "$ENVIRON['TEST_VOLUME_ID']"].name: $ENVIRON['TEST_VOLUME_NAME']
+
+- name: resize volume
+  POST: /$ENVIRON['TEST_PROJECT_ID']/volumes/$ENVIRON['TEST_VOLUME_ID']/action
+  status: 202
+  request_headers:
+    content-type: application/json
+  data:
+    os-extend:
+      new_size: $ENVIRON['TEST_VOLUME_RESIZE']
+
+- name: check volume is resized
+  GET: /$ENVIRON['TEST_PROJECT_ID']/volumes/$ENVIRON['TEST_VOLUME_ID']
+  status: 200
+  response_json_paths:
+    $.volume.size: $ENVIRON['TEST_VOLUME_RESIZE']
+
+- name: update volume name
+  PUT: /$ENVIRON['TEST_PROJECT_ID']/volumes/$ENVIRON['TEST_VOLUME_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    volume:
+      name: $ENVIRON['TEST_VOLUME_NAME_NEW']
+  response_json_paths:
+    $.volume.name: $ENVIRON['TEST_VOLUME_NAME_NEW']
+
+#
+# volume quota
+#
+- name: update volume quota
+  PUT: /$ENVIRON['PROJECT_ID']/os-quota-sets/$ENVIRON['TEST_PROJECT_ID']
+  status: 200
+  request_headers:
+    content-type: application/json
+  data:
+    quota_set:
+      volumes: 10
+      backups: 4
+
+- name: check volume quota is set
+  GET: /$ENVIRON['PROJECT_ID']/os-quota-sets/$ENVIRON['TEST_PROJECT_ID']
+  status: 200
+  response_json_paths:
+    $.quota_set.volumes: 10
+    $.quota_set.backups: 4
+
+#
 # clean resources
 #
+- name: clean volume 
+  DELETE: /$ENVIRON['TEST_PROJECT_ID']/volumes/$ENVIRON['TEST_VOLUME_ID']
+  status: 202
 - name: clean volume type
   DELETE: /$ENVIRON['PROJECT_ID']/types/$ENVIRON['TEST_VOLUME_TYPE_ID']
   status: 202

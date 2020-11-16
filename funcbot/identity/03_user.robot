@@ -8,24 +8,14 @@ Resource        ${EXECDIR}/../resources/identity_keywords.robot
 Library         GabbiLibrary    ${IDENTITY_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
-List all projects
+Create a user and show the user info
   [Tags]    identity    critical
   Given Identity service is available
-  When List all projects
+  When Create a user
+  Then Show the user info
 
-Create a project and show the project info
+Assign the admin role to user on project
   [Tags]    identity    critical
   Given Identity service is available
-  When Create a project
-  Then Show the project info
-
-Rename the project
-  [Tags]    identity    critical
-  Given Identity service is available
-  When Rename the project
-
-#Delete the project
-#  [Tags]    identity    critical
-#  Given Identity service is available
-#  When Delete the project
-#  Then The project is gone
+  When Assign the admin role to user on project
+  Then Check if user has the admin role on project

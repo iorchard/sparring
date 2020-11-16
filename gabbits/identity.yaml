@@ -60,6 +60,58 @@ tests:
   response_json_paths:
     $.project.name: $ENVIRON['TEST_PROJECT_NEWNAME']
 
+#
+# user
+#
+- name: create user
+  POST: /users
+  request_headers:
+    content-type: application/json
+  data:
+    user:
+      default_project_id: $ENVIRON['TEST_PROJECT_ID']
+      name: $ENVIRON['TEST_USER_NAME']
+      password: $ENVIRON['TEST_USER_PASSWORD']
+  status: 201
+  response_store_value:
+    $.user.id: test_user_id
+
+- name: show user info
+  GET: /users/$ENVIRON['TEST_USER_ID']
+  status: 200
+  response_json_paths:
+    $.user.default_project_id: $ENVIRON['TEST_PROJECT_ID']
+
+#
+# role
+#
+- name: get admin user id
+  GET: /users
+  status: 200
+  response_store_value:
+    $.users[?name= "admin"].id: admin_user_id
+
+- name: get admin role id
+  GET: /roles
+  status: 200
+  response_store_value:
+    $.roles[?name = "admin"].id: admin_role_id
+
+- name: assign admin role to admin user on project
+  PUT: /projects/$ENVIRON['TEST_PROJECT_ID']/users/$ENVIRON['ADMIN_USER_ID']/roles/$ENVIRON['ADMIN_ROLE_ID']
+  status: 204
+
+- name: assign admin role to user on project
+  PUT: /projects/$ENVIRON['TEST_PROJECT_ID']/users/$ENVIRON['TEST_USER_ID']/roles/$ENVIRON['ADMIN_ROLE_ID']
+  status: 204
+
+- name: check user has admin role on project
+  HEAD: /projects/$ENVIRON['TEST_PROJECT_ID']/users/$ENVIRON['TEST_USER_ID']/roles/$ENVIRON['ADMIN_ROLE_ID']
+  status: 204
+
+#
+# cleanup
+#
 - name: delete project
   DELETE: /projects/$ENVIRON['TEST_PROJECT_ID']
   status: 204
@@ -68,10 +120,10 @@ tests:
   GET: /projects/$ENVIRON['TEST_PROJECT_ID']
   status: 404
 
+- name: clean user
+  DELETE: /users/$ENVIRON['TEST_USER_ID']
+  status: 204 || 404
+
 - name: clean project
   DELETE: /projects/$ENVIRON['TEST_PROJECT_ID']
   status: 204 || 404
-
-#
-#
-#
