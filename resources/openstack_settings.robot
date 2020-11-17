@@ -65,5 +65,6 @@ ${TEST_VOLUME_TYPE_NAME}    sparring-volume-type
 ${VOLUME_BACKEND_NAME}      rbd1
 
 ${TEST_VOLUME_NAME}         sparring-volume
-${TEST_VOLUME_SIZE}         50
-${TEST_VOLUME_RESIZE}       80
+${TEST_VOLUME_SIZE}         1
+${TEST_VOLUME_RESIZE}       2
+${TEST_SNAPSHOT_NAME}       sparring-snapshot

@@ -1,5 +1,5 @@
 *** Settings ***
-Suite Setup     User gets auth token
+Suite Setup     User gets auth test project scoped token
 Suite Teardown  Clean the volume resources if test failed
 
 Resource        ${EXECDIR}/../resources/common_resources.robot
@@ -11,27 +11,19 @@ Resource        ${EXECDIR}/../resources/volume_keywords.robot
 Library         GabbiLibrary    ${VOLUME_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
-Create a volume type and show the volume type info
+Create a snapshot and show the snapshot info
   [Tags]    volume     critical
   Given Volume service is available
-  and Create a project
-  and Assign the admin role to admin user on project
-  When Create a volume type 
-  and Set the volume backend of the volume type
-  Then Show the volume type info
+  When Create a snapshot
+  and Check if the snapshot is available
+  Then Show the snapshot info
 
-Check if the created volume type is in volume type list
+Check if the created snapshot is in snapshot list
   [Tags]    volume     critical
   Given Volume service is available
-  When Check if the created volume type is in volume type list
+  When Check if the created snapshot is in snapshot list
 
-Add the volume type to test project
+Update the snapshot name
   [Tags]    volume     critical
   Given Volume service is available
-  When Add the volume type to test project
-
-Check if the test project has an access to the volume type
-  [Tags]    volume     critical
-  Given Volume service is available
-  When Check if the test project has an access to the volume type
-
+  When Update the snapshot name

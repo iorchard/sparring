@@ -1,5 +1,5 @@
 *** Settings ***
-Suite Setup     User gets auth token
+Suite Setup     User gets auth test project scoped token
 Suite Teardown  Clean the volume resources if test failed
 
 Resource        ${EXECDIR}/../resources/common_resources.robot
@@ -11,9 +11,14 @@ Resource        ${EXECDIR}/../resources/volume_keywords.robot
 Library         GabbiLibrary    ${VOLUME_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
-Update volume quota for the project
-  [Tags]    volume      critical
+Upload the volume to image service
+  [Tags]    volume     critical
   Given Volume service is available
-  When Update volume quota for the project
-  Then Check if the volume quota is set
+  When Upload the volume to image service
+  and Check if the image from vol is active
+  Then Show the image from vol info
 
+#Revert the volume to snapshot
+#  [Tags]    volume  critical
+#  Given Volume service is available
+#  When Revert the volume to snapshot

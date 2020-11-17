@@ -61,4 +61,3 @@ Delete the image
 The image is gone
   image is gone     url=${IMAGE_SERVICE}
 
-

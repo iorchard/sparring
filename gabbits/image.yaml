@@ -55,6 +55,18 @@ tests:
   GET: /images/$ENVIRON['TEST_IMAGE_ID']
   status: 404
 
+- name: check image is active
+  GET: /images/$ENVIRON['TEST_IMAGE_ID']
+  status: 200
+  response_json_paths:
+    $.status: active
+
+- name: show image info
+  GET: /images/$ENVIRON['TEST_IMAGE_ID']
+  status: 200
+  response_json_paths:
+    $.name: $ENVIRON['TEST_IMAGE_NAME']
+
 #
 # clean resources
 #

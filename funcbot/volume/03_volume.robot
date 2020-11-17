@@ -5,6 +5,7 @@ Suite Teardown  Clean the volume resources if test failed
 Resource        ${EXECDIR}/../resources/common_resources.robot
 Resource        ${EXECDIR}/../resources/openstack_settings.robot
 Resource        ${EXECDIR}/../resources/identity_keywords.robot
+Resource        ${EXECDIR}/../resources/image_keywords.robot
 Resource        ${EXECDIR}/../resources/volume_keywords.robot
 
 Library         GabbiLibrary    ${VOLUME_SERVICE}     ${GABBIT_PATH}
@@ -12,7 +13,9 @@ Library         GabbiLibrary    ${VOLUME_SERVICE}     ${GABBIT_PATH}
 *** Test Cases ***
 Create a volume and show the volume info
   [Tags]    volume     critical
-  Given Volume service is available
+  Given Create an image
+  and Upload the image data
+  and Check if the created image is in image list and active 
   When Create a volume
   and Check if the volume is available
   Then Show the volume info
