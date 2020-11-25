@@ -1,0 +1,72 @@
+defaults:
+  verbose: True
+  request_headers:
+    x-auth-token: $ENVIRON['SERVICE_TOKEN']
+
+tests:
+- name: connect to compute service
+  GET: $ENVIRON['COMPUTE_SERVICE']/
+  redirects: True
+  status: 200
+  response_json_paths:
+    $.version.links[?rel = "self"].href: /$ENVIRON['COMPUTE_SERVICE']/
+    $.version.status: CURRENT
+
+#
+# hypervisor
+#
+- name: list hypervisor
+  GET: /os-hypervisors
+  status: 200
+  response_store_value:
+    $.hypervisors[0].id: test_hypervisor_id
+
+- name: list hypervisor detail
+  GET: /os-hypervisors/detail
+  status: 200
+
+- name: show detail for hypervisor
+  GET: /os-hypervisors/$ENVIRON['TEST_HYPERVISOR_ID']
+  status: 200
+  response_json_paths:
+    $.hypervisor.id: $ENVIRON['TEST_HYPERVISOR_ID']
+
+#
+# flavor
+#
+- name: create flavor
+  POST: /flavors
+  request_headers:
+    content-type: application/json
+  data:
+    flavor:
+      name: $ENVIRON['TEST_FLAVOR_NAME']
+      vcpus: $ENVIRON['TEST_FLAVOR_VCPUS']
+      ram: $ENVIRON['TEST_FLAVOR_RAM']
+      disk: $ENVIRON['TEST_FLAVOR_DISK']
+  status: 200
+  response_store_value:
+    $.flavor.id: test_flavor_id
+
+- name: check flavor is in flavor list
+  GET: /flavors
+  status: 200
+  response_json_paths:
+    $.flavors[?id = "$ENVIRON['TEST_FLAVOR_ID']"].name: $ENVIRON['TEST_FLAVOR_NAME']
+
+- name: show flavor info
+  GET: /flavors/$ENVIRON['TEST_FLAVOR_ID']
+  status: 200
+  response_json_paths:
+    $.flavor.name: $ENVIRON['TEST_FLAVOR_NAME']
+    $.flavor.vcpus: $ENVIRON['TEST_FLAVOR_VCPUS']
+    $.flavor.ram: $ENVIRON['TEST_FLAVOR_RAM']
+    $.flavor.disk: $ENVIRON['TEST_FLAVOR_DISK']
+
+
+#
+# clean resources
+#
+- name: clean flavor
+  DELETE: /flavors/$ENVIRON['TEST_FLAVOR_ID']
+  status: 202 || 404
