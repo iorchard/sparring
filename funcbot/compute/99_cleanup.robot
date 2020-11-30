@@ -12,3 +12,4 @@ Library         GabbiLibrary    ${IMAGE_SERVICE}     ${GABBIT_PATH}
 Clean all compute resources
   [Tags]    compute
   Clean compute resources
+  Clean the project

@@ -59,7 +59,7 @@ ${TEST_IMAGE_FILE}                  /tmp/cirros.img
 #
 # volume test
 #
-# admin project id used by volume test
+# admin project id used by volume test. Put admin project id here.
 ${PROJECT_ID}               00bce98645894a8c9bee220b1a249a7b
 ${TEST_VOLUME_TYPE_NAME}    sparring-volume-type
 ${VOLUME_BACKEND_NAME}      rbd1
@@ -76,3 +76,7 @@ ${TEST_FLAVOR_NAME}         sparring-flavor
 ${TEST_FLAVOR_VCPUS}        1
 ${TEST_FLAVOR_RAM}          1024
 ${TEST_FLAVOR_DISK}         10
+${TEST_QUOTA_CORES}         10
+${TEST_AGGREGATE_NAME}      sparring-aggregate
+
+

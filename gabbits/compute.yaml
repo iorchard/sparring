@@ -20,6 +20,7 @@ tests:
   status: 200
   response_store_value:
     $.hypervisors[0].id: test_hypervisor_id
+    $.hypervisors[0].hypervisor_hostname: test_hypervisor_host
 
 - name: list hypervisor detail
   GET: /os-hypervisors/detail
@@ -63,6 +64,84 @@ tests:
     $.flavor.ram: $ENVIRON['TEST_FLAVOR_RAM']
     $.flavor.disk: $ENVIRON['TEST_FLAVOR_DISK']
 
+#
+# quota
+#
+- name: update quota for project
+  PUT: /os-quota-sets/$ENVIRON['TEST_PROJECT_ID']
+  request_headers:
+    content-type: application/json
+  data:
+    quota_set:
+      cores: $ENVIRON['TEST_QUOTA_CORES']
+  status: 200
+  response_json_paths:
+    $.quota_set.cores: $ENVIRON['TEST_QUOTA_CORES']
+
+- name: check quota updated
+  GET: /os-quota-sets/$ENVIRON['TEST_PROJECT_ID']/detail
+  status: 200
+  response_json_paths:
+    $.quota_set.cores.limit: $ENVIRON['TEST_QUOTA_CORES']
+
+#
+# aggregate
+#
+- name: create aggregate
+  POST: /os-aggregates
+  request_headers:
+    content-type: application/json
+  data:
+    aggregate:
+      name: $ENVIRON['TEST_AGGREGATE_NAME']
+  status: 200
+  response_store_value:
+    $.aggregate.id: test_aggregate_id
+
+- name: check aggregate is in aggregate list
+  GET: /os-aggregates
+  status: 200
+  response_json_paths:
+    $.aggregates[?id = $ENVIRON['TEST_AGGREGATE_ID']].name: $ENVIRON['TEST_AGGREGATE_NAME']
+
+- name: add host to aggregate
+  POST: /os-aggregates/$ENVIRON['TEST_AGGREGATE_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    add_host:
+      host: $ENVIRON['TEST_HYPERVISOR_HOST']
+  status: 200
+  response_json_paths:
+    $.aggregate.hosts[0]: $ENVIRON['TEST_HYPERVISOR_HOST']
+
+- name: update aggregate
+  PUT: /os-aggregates/$ENVIRON['TEST_AGGREGATE_ID']
+  request_headers:
+    content-type: application/json
+  data:
+    aggregate:
+      name: $ENVIRON['TEST_AGGREGATE_NEWNAME']
+  status: 200
+  response_json_paths:
+    $.aggregate.name: $ENVIRON['TEST_AGGREGATE_NEWNAME']
+
+- name: show aggregate info
+  GET: /os-aggregates/$ENVIRON['TEST_AGGREGATE_ID']
+  status: 200
+  response_json_paths:
+    $.aggregate.id: $ENVIRON['TEST_AGGREGATE_ID']
+
+- name: remove host from aggregate
+  POST: /os-aggregates/$ENVIRON['TEST_AGGREGATE_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    remove_host:
+      host: $ENVIRON['TEST_HYPERVISOR_HOST']
+  status: 200
+  response_json_paths:
+    $.aggregate.hosts.`len`: 0
 
 #
 # clean resources
@@ -70,3 +149,7 @@ tests:
 - name: clean flavor
   DELETE: /flavors/$ENVIRON['TEST_FLAVOR_ID']
   status: 202 || 404
+
+- name: clean aggregate
+  DELETE: /os-aggregates/$ENVIRON['TEST_AGGREGATE_ID']
+  status: 200 || 404
