@@ -13,14 +13,30 @@ Resource        ${EXECDIR}/../resources/compute_keywords.robot
 Library         GabbiLibrary    ${COMPUTE_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
-Update the quotas for a project
+Create a server
   [Tags]    compute     critical
   Given Compute service is available
-  and Create a project
-  and Assign the admin role to admin user on project
-  When Update the quotas for a project
+  and Create a volume and a port for a server
+  When Create a server with a port and a volume
+  Then Check if the server is active
 
-Check if the quotas are updated
+Check if the created server is in server list
   [Tags]    compute     critical
   Given Compute service is available
-  When Check if the quotas are updated
+  When Check if the created server is in server list
+
+List servers details
+  [Tags]    compute     critical
+  Given Compute service is available
+  When List servers details
+
+Update the server info
+  [Tags]    compute     critical
+  Given Compute service is available
+  When Update the server info
+
+Show the server info
+  [Tags]    compute     critical
+  Given Compute service is available
+  When Show the server info
+

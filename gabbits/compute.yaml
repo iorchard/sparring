@@ -144,6 +144,67 @@ tests:
     $.aggregate.hosts.`len`: 0
 
 #
+# server
+#
+- name: create server with port and volume
+  POST: /servers
+  request_headers:
+    content-type: application/json
+  data:
+    server:
+      name: $ENVIRON['TEST_SERVER_NAME']
+      flavorRef: $ENVIRON['TEST_FLAVOR_ID']
+      networks:
+        - port: $ENVIRON['TEST_PORT_ID']
+      block_device_mapping_v2:
+        - boot_index: 0
+          uuid: $ENVIRON['TEST_VOLUME_ID']
+          delete_on_termination: true
+          source_type: volume
+          destination_type: volume
+  status: 202
+  response_headers:
+      location: //servers/[a-f0-9-]+/
+  response_store_value:
+      $.server.id: test_server_id
+
+- name: check server is active
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_json_paths:
+    $.server.status: ACTIVE
+
+- name: check server is in server list
+  GET: /servers
+  status: 200
+  response_json_paths:
+    $.servers[?id = "$ENVIRON['TEST_SERVER_ID']"].name: $ENVIRON['TEST_SERVER_NAME']
+
+- name: list server detail
+  GET: /servers/detail
+  status: 200
+  response_json_paths:
+    $.servers[?id = "$ENVIRON['TEST_SERVER_ID']"].name: $ENVIRON['TEST_SERVER_NAME']
+
+- name: update server info
+  PUT: /servers/$ENVIRON['TEST_SERVER_ID']
+  request_headers:
+    content-type: application/json
+  data:
+    server:
+      name: $ENVIRON['TEST_SERVER_NEWNAME']
+  status: 200
+  response_json_paths:
+    $.server.name: $ENVIRON['TEST_SERVER_NEWNAME']
+
+- name: show server info
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_json_paths:
+    $.server.id: $ENVIRON['TEST_SERVER_ID']
+
+
+#
 # clean resources
 #
 - name: clean flavor
@@ -153,3 +214,7 @@ tests:
 - name: clean aggregate
   DELETE: /os-aggregates/$ENVIRON['TEST_AGGREGATE_ID']
   status: 200 || 404
+
+- name: clean server
+  DELETE: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 204 || 404

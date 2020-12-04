@@ -4,6 +4,8 @@ Compute service is available
 
 Clean the compute resources if test failed
   Run Keyword If Any Tests Failed   Clean compute resources
+  Run Keyword If Any Tests Failed   Clean network resources
+  Run Keyword If Any Tests Failed   Clean volume resources
   Run Keyword If Any Tests Failed   Clean the project
 
 Clean compute resources
@@ -18,6 +20,9 @@ Clean compute resources
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/flavor.txt
   ${test_flavor_id} =   Run Keyword If  ${rc} == 0
   ...                       Get File    ${TEMPDIR}/flavor.txt
+  ${rc} =   Run And Return Rc   ls ${TEMPDIR}/server.txt
+  ${test_server_id} =   Run Keyword If  ${rc} == 0
+  ...                       Get File    ${TEMPDIR}/server.txt
 
   Run Keyword And Ignore Error  remove host from aggregate
   ...                           url=${COMPUTE_SERVICE}
@@ -25,6 +30,8 @@ Clean compute resources
   ...                           TEST_HYPERVISOR_HOST=${test_hypervisor_host}
   Run Keyword And Ignore Error  clean aggregate    url=${COMPUTE_SERVICE}
   ...                           TEST_AGGREGATE_ID=${test_aggregate_id}
+  Run Keyword And Ignore Error  clean server    url=${COMPUTE_SERVICE}
+  ...                           TEST_SERVER_ID=${test_server_id}
   Run Keyword And Ignore Error  clean flavor    url=${COMPUTE_SERVICE}
   ...                           TEST_FLAVOR_ID=${test_flavor_id}
 
@@ -102,3 +109,57 @@ Show the aggregate info
 Remove a host from the aggregate
   remove host from aggregate    url=${COMPUTE_SERVICE}
 
+#
+# server
+#
+Create a volume and a port for a server
+  # create a volume
+  Create a volume type
+  Set the volume backend of the volume type
+  Check if the created volume type is in volume type list
+  Add the volume type to test project
+  Check if the test project has an access to the volume type
+
+  # Change auth token to test project scoped token for volume creation
+  User gets auth test project scoped token 
+  Create an image
+  Upload the image data
+  Check if the created image is in image list and active
+  Create a volume
+  Check if the volume is available
+
+  # Change auth token to the default.
+  User gets auth token 
+  # create a port
+  Create a network
+  Create a subnet
+  Create a port
+
+Create a server with a port and a volume
+  &{RESP} =     create server with port and volume    url=${COMPUTE_SERVICE}
+  ...                   TEST_SERVER_NAME=${TEST_SERVER_NAME}
+  Set Environment Variable  TEST_SERVER_ID  ${RESP.test_server_id}
+  Create File   ${TEMPDIR}/server.txt   ${RESP.test_server_id}
+
+Check if the server is active
+  Wait Until Keyword Succeeds   30s   3s
+  ...   check server is active    url=${COMPUTE_SERVICE}
+
+
+Check if the created server is in server list
+  check server is in server list    url=${COMPUTE_SERVICE}
+  ...                               TEST_SERVER_NAME=${TEST_SERVER_NAME}
+
+List servers details
+  list server detail    url=${COMPUTE_SERVICE}
+  ...                   TEST_SERVER_NAME=${TEST_SERVER_NAME}
+
+Update the server info
+  update server info    url=${COMPUTE_SERVICE}
+  ...                   TEST_SERVER_NEWNAME=${TEST_SERVER_NAME}-new
+
+Show the server info
+  show server info      url=${COMPUTE_SERVICE}
+  ...                   TEST_SERVER_NAME=${TEST_SERVER_NAME}
+
+  

@@ -78,5 +78,5 @@ ${TEST_FLAVOR_RAM}          1024
 ${TEST_FLAVOR_DISK}         10
 ${TEST_QUOTA_CORES}         10
 ${TEST_AGGREGATE_NAME}      sparring-aggregate
-
-
+${TEST_SERVER_NAME}         sparring-server
+${TEST_SERVER_DESC}         Test Sparring Server
