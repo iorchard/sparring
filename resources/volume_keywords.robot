@@ -21,6 +21,9 @@ Clean volume resources
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/volume.txt
   ${test_volume_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/volume.txt
+  ${rc} =   Run And Return Rc   ls ${TEMPDIR}/volume2.txt
+  ${test_volume_id2} =  Run Keyword If     ${rc} == 0
+  ...   Get File    ${TEMPDIR}/volume2.txt
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/volume_type.txt
   ${test_volume_type_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/volume_type.txt
@@ -40,6 +43,8 @@ Clean volume resources
   ...   image is gone       url=${IMAGE_SERVICE}
   ...                       TEST_IMAGE_ID=${test_image_id_from_vol}
 
+  Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
+  ...                           TEST_VOLUME_ID=${test_volume_id2}
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${test_volume_id}
   Wait Until Keyword Succeeds   10s   1s
@@ -187,3 +192,14 @@ Show the image from vol info
 
 Revert the volume to snapshot
   revert volume to snapshot     url=${VOLUME_SERVICE}
+
+# used by compute/05_server.robot
+Create a volume to attach to the server
+  # Change auth token to test project scoped token for volume creation
+  User gets auth test project scoped token
+  &{RESP} =     create volume     url=${VOLUME_SERVICE}
+  ...               TEST_VOLUME_NAME=${TEST_VOLUME_NAME}-2
+  ...               TEST_VOLUME_SIZE=${TEST_VOLUME_SIZE}
+  Set Environment Variable   TEST_VOLUME_ID2  ${RESP.test_volume_id}
+  Create File    ${TEMPDIR}/volume2.txt   ${RESP.test_volume_id}
+

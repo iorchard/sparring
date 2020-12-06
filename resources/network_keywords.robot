@@ -100,9 +100,9 @@ Add an interface to the router
   Set Environment Variable  TEST_ROUTER_PORT_ID  ${RESP.test_router_port_id}
   Create File    ${TEMPDIR}/router_port.txt   ${RESP.test_router_port_id}
 
-Rename the router name
-  rename router name    url=${NETWORK_SERVICE}
-  ...                   TEST_ROUTER_NEWNAME=${TEST_ROUTER_NAME}-new
+Set an external gateway to the router
+  set external gateway to router    url=${NETWORK_SERVICE}
+  ...                   PUBLIC_NETWORK_ID=${PUBLIC_NETWORK_ID}
 
 #
 # port
@@ -140,6 +140,30 @@ Check if the created floating ip is in floating ip list
 
 Update the floating ip description
   update floating ip description       url=${NETWORK_SERVICE}
+
+# used by compute/05_server.robot
+Set up a router to map a floating ip to the server
+  Create a router
+  Add an interface to the router
+  Set an external gateway to the router
+
+# used by compute/05_server.robot
+Create a floating ip with the server port
+  &{RESP} =     create floating ip with server port   url=${NETWORK_SERVICE}
+  ...                           PUBLIC_NETWORK_ID=${PUBLIC_NETWORK_ID}
+
+  Set Environment Variable  TEST_FLOATINGIP_ID  ${RESP.test_floatingip_id}
+  Set Environment Variable  TEST_FLOATINGIP_ADDR  ${RESP.test_floatingip_addr}
+  Create File    ${TEMPDIR}/floatingip.txt   ${RESP.test_floatingip_id}
+
+# used by compute/05_server.robot
+Check if the floating ip is active
+  Wait Until Keyword Succeeds   10s   2s
+  ...       check floating ip is active     url=${NETWORK_SERVICE}
+
+# used by compute/05_server.robot
+Check if the floating ip is mapped to the server port
+  check floating ip is mapped to server port    url=${NETWORK_SERVICE}
 
 #
 # quota

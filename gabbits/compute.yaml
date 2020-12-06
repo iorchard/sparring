@@ -203,6 +203,32 @@ tests:
   response_json_paths:
     $.server.id: $ENVIRON['TEST_SERVER_ID']
 
+- name: check server has floating ip
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_json_paths:
+      $.server.addresses.$ENVIRON['TEST_NETWORK_NAME'][?addr = "$ENVIRON['TEST_FLOATINGIP_ADDR']"]["OS-EXT-IPS:type"]: "floating"
+
+- name: attach volume to server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/os-volume_attachments
+  request_headers:
+    content-type: application/json
+  data:
+    volumeAttachment:
+      volumeId: $ENVIRON['TEST_VOLUME_ID2']
+  status: 200
+
+- name: check volume is attached to server
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']/os-volume_attachments/$ENVIRON['TEST_VOLUME_ID2']
+  status: 200
+  response_json_paths:
+    $.volumeAttachment.volumeId: $ENVIRON['TEST_VOLUME_ID2']
+
+- name: check server has volume
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_json_paths:
+      $.server["os-extended-volumes:volumes_attached"][1].id: $ENVIRON['TEST_VOLUME_ID2']
 
 #
 # clean resources

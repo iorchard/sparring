@@ -68,7 +68,6 @@ ${TEST_VOLUME_NAME}         sparring-volume
 ${TEST_VOLUME_SIZE}         1
 ${TEST_VOLUME_RESIZE}       2
 ${TEST_SNAPSHOT_NAME}       sparring-snapshot
-
 #
 # compute test
 #

@@ -6,6 +6,7 @@ Clean the compute resources if test failed
   Run Keyword If Any Tests Failed   Clean compute resources
   Run Keyword If Any Tests Failed   Clean network resources
   Run Keyword If Any Tests Failed   Clean volume resources
+  Run Keyword If Any Tests Failed   Clean image resources
   Run Keyword If Any Tests Failed   Clean the project
 
 Clean compute resources
@@ -113,7 +114,6 @@ Remove a host from the aggregate
 # server
 #
 Create a volume and a port for a server
-  # create a volume
   Create a volume type
   Set the volume backend of the volume type
   Check if the created volume type is in volume type list
@@ -145,7 +145,6 @@ Check if the server is active
   Wait Until Keyword Succeeds   30s   3s
   ...   check server is active    url=${COMPUTE_SERVICE}
 
-
 Check if the created server is in server list
   check server is in server list    url=${COMPUTE_SERVICE}
   ...                               TEST_SERVER_NAME=${TEST_SERVER_NAME}
@@ -162,4 +161,17 @@ Show the server info
   show server info      url=${COMPUTE_SERVICE}
   ...                   TEST_SERVER_NAME=${TEST_SERVER_NAME}
 
-  
+Check if the server has the floating ip
+  check server has floating ip      url=${COMPUTE_SERVICE}
+  ...                   TEST_NETWORK_NAME=${TEST_NETWORK_NAME}
+
+Attach the volume to the server
+  # Change auth token to the default.
+  User gets auth token 
+  attach volume to server   url=${COMPUTE_SERVICE}
+
+Check if the volume is attached to the server
+  check volume is attached to server    url=${COMPUTE_SERVICE}
+
+Check if the server has the volume
+  check server has volume   url=${COMPUTE_SERVICE}

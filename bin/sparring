@@ -30,10 +30,21 @@ run_funcbot () {
             --outputdir output \
             "${suites[@]}"
 }
+cleanup () {
+    cd $FUNCBOT_DIR
+    robot   --exitonfailure \
+            --exitonerror \
+            --critical critical \
+            --console verbose \
+            --consolecolors auto \
+            --outputdir output \
+            cleanup
+}
 USAGE () {
     echo "USAGE: $0 {-h|-e|-r|-t|-v}" 1>&2
     echo ""
     echo " -h --help                            Display this help message."
+    echo " -c --cleanup                         Clean up test resources."
     echo " -r --run-funcbot [TEST_SUITE]...     Run funcbot."
     echo " -l --list-funcbot                    List funcbot test suites."
     echo " -R --run-perfbot [TEST_SUITE]...     Run perfbot."
@@ -52,6 +63,10 @@ do
     case "$OPT" in
         -h | --help)
             USAGE
+            break
+            ;;
+        -c | --cleanup)
+            cleanup 
             break
             ;;
         -r | --run-funcbot)

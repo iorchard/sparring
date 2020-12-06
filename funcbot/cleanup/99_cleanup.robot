@@ -9,7 +9,7 @@ Resource        ${EXECDIR}/../resources/network_keywords.robot
 Resource        ${EXECDIR}/../resources/volume_keywords.robot
 Resource        ${EXECDIR}/../resources/compute_keywords.robot
 
-Library         GabbiLibrary    ${COMPUTE_SERVICE}     ${GABBIT_PATH}
+Library         GabbiLibrary    ${IDENTITY_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 Clean all compute resources

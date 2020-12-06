@@ -26,8 +26,7 @@ Add an interface to the router
   Given Network service is available
   When Add an interface to the router
 
-Rename the router name
+Set an external gateway to the router
   [Tags]    network     critical
   Given Network service is available
-  When Rename the router name
-
+  When Set an external gateway to the router

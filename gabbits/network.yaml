@@ -116,16 +116,18 @@ tests:
   response_store_value:
     $.port_id: test_router_port_id
   
-- name: rename router name
+- name: set external gateway to router
   PUT: /routers/$ENVIRON['TEST_ROUTER_ID']
-  status: 200
   request_headers:
     content-type: application/json
   data:
     router:
-      name: $ENVIRON['TEST_ROUTER_NEWNAME']
+      external_gateway_info:
+        network_id: $ENVIRON['PUBLIC_NETWORK_ID']
+        enable_snat: true
+  status: 200
   response_json_paths:
-    $.router.name: $ENVIRON['TEST_ROUTER_NEWNAME']
+      $.router.external_gateway_info.network_id: $ENVIRON['PUBLIC_NETWORK_ID']
 
 #
 # port
@@ -194,6 +196,35 @@ tests:
       description: "sparring floating ip - new"
   response_json_paths:
     $.floatingip.description: "sparring floating ip - new"
+
+# used by compute/05_server.robot
+- name: create floating ip with server port
+  POST: /floatingips
+  request_headers:
+    content-type: application/json
+  data:
+    floatingip:
+      floating_network_id: $ENVIRON['PUBLIC_NETWORK_ID']
+      port_id: $ENVIRON['TEST_PORT_ID']
+      description: "sparring floating ip for the server port"
+  status: 201
+  response_store_value:
+    $.floatingip.id: test_floatingip_id
+    $.floatingip.floating_ip_address: test_floatingip_addr
+
+# used by compute/05_server.robot
+- name: check floating ip is active
+  GET: /floatingips/$ENVIRON['TEST_FLOATINGIP_ID']
+  status: 200
+  response_json_paths:
+    $.floatingip.status: ACTIVE
+
+# used by compute/05_server.robot
+- name: check floating ip is mapped to server port
+  GET: /floatingips/$ENVIRON['TEST_FLOATINGIP_ID']
+  status: 200
+  response_json_paths:
+    $.floatingip.port_id: $ENVIRON['TEST_PORT_ID']
 
 #
 # quota

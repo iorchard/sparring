@@ -40,3 +40,27 @@ Show the server info
   Given Compute service is available
   When Show the server info
 
+Map a floating ip to the server
+  [Tags]    compute  critical
+  Given Compute service is available
+  and Set up a router to map a floating ip to the server
+  When Create a floating ip with the server port
+  Then Check if the floating ip is active
+
+Check if the floating ip is mapped to the server port
+  [Tags]    compute  critical
+  Given Compute service is available
+  When Check if the floating ip is mapped to the server port
+  Then Check if the server has the floating ip
+
+Create a volume and attach it to the server
+  [Tags]    compute     critical
+  Given Compute service is available
+  and Create a volume to attach to the server
+  When Attach the volume to the server
+
+Check if the volume is attached to the server
+  [Tags]    compute     critical
+  Given Compute service is available
+  When Check if the volume is attached to the server
+  Then Check if the server has the volume
