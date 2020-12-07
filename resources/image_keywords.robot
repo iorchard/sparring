@@ -14,9 +14,15 @@ Clean image resources
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/image.txt
   ${test_image_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/image.txt
+  ${rc} =   Run And Return Rc   ls ${TEMPDIR}/image_from_server.txt
+  ${test_image_from_server_id} =   Run Keyword If  ${rc} == 0
+  ...                       Get File    ${TEMPDIR}/image_from_server.txt
+
 
   Run Keyword And Ignore Error  clean image   url=${IMAGE_SERVICE}
   ...                           TEST_IMAGE_ID=${test_image_id}
+  Run Keyword And Ignore Error  clean image   url=${IMAGE_SERVICE}
+  ...                           TEST_IMAGE_ID=${test_image_from_server_id}
 
   ${path}   ${img_file} =   Split Path  ${TEST_IMAGE_FILE}
   Remove Files      ${GABBIT_PATH}/${img_file}
@@ -48,7 +54,8 @@ Get the image file
   Should Be Equal As Integers   ${rc}   0
 
 Check if the created image is in image list and active
-  created image is in image list and active    url=${IMAGE_SERVICE}
+  Wait Until Keyword Succeeds   1m   3s
+  ...   created image is in image list and active    url=${IMAGE_SERVICE}
 
 Update the image name
   # create application/openstack-images-v2.1-json-patch file
@@ -61,3 +68,7 @@ Delete the image
 The image is gone
   image is gone     url=${IMAGE_SERVICE}
 
+# used by compute/05_server.robot
+Check if the created image from the server is active
+  Wait Until Keyword Succeeds   1m   3s
+  ...   check created image from server is active    url=${IMAGE_SERVICE}

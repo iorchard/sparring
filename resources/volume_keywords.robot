@@ -9,6 +9,9 @@ Clean the volume resources if test failed
 
 Clean volume resources
   # get info from txt file
+  ${rc} =   Run And Return Rc   ls ${TEMPDIR}/image_snapshot.txt
+  ${test_image_snapshot_id} =  Run Keyword If     ${rc} == 0
+  ...   Get File    ${TEMPDIR}/image_snapshot.txt
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/snapshot.txt
   ${test_snapshot_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/snapshot.txt
@@ -28,18 +31,28 @@ Clean volume resources
   ${test_volume_type_id} =  Run Keyword If     ${rc} == 0
   ...   Get File    ${TEMPDIR}/volume_type.txt
 
+  # Get snapshot id of "snapshot for sparring-image-from-server" name
+  &{RESP} =     Get a snapshot id of image from server  url=${VOLUME_SERVICE}
+  ...               SNAPSHOT_NAME="snapshot for ${TEST_IMAGE_FROM_SERVER}"
+  ...               PROJECT_ID=${PROJECT_ID}
+  Run Keyword And Ignore Error  clean snapshot from image  url=${VOLUME_SERVICE}
+  ...                           TEST_SNAPSHOT_ID=${RESP.snapshot_id}
+  ...                           PROJECT_ID=${PROJECT_ID}
+
   User gets auth test project scoped token
+  Run Keyword And Ignore Error  clean snapshot   url=${VOLUME_SERVICE}
+  ...                           TEST_SNAPSHOT_ID=${test_image_snapshot_id}
 
   Run Keyword And Ignore Error  clean snapshot   url=${VOLUME_SERVICE}
   ...                           TEST_SNAPSHOT_ID=${test_snapshot_id}
-  Wait Until Keyword Succeeds   10s   1s
+  Wait Until Keyword Succeeds   1m   3s
   ...   check snapshot is gone     url=${VOLUME_SERVICE}
 
   Clean image resources
 
   Run Keyword And Ignore Error  clean image   url=${IMAGE_SERVICE}
   ...                           TEST_IMAGE_ID=${test_image_id_from_vol}
-  Wait Until Keyword Succeeds   10s   1s
+  Wait Until Keyword Succeeds   1m  3s
   ...   image is gone       url=${IMAGE_SERVICE}
   ...                       TEST_IMAGE_ID=${test_image_id_from_vol}
 
@@ -47,7 +60,7 @@ Clean volume resources
   ...                           TEST_VOLUME_ID=${test_volume_id2}
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${test_volume_id}
-  Wait Until Keyword Succeeds   10s   1s
+  Wait Until Keyword Succeeds   1m  3s
   ...   check volume is gone     url=${VOLUME_SERVICE}
   # There will be a readonly image-TEST_IMAGE_ID volume when upload volume.
   # need to delete it manually.
@@ -56,7 +69,7 @@ Clean volume resources
   ...                           TEST_VOLUME_NAME=image-${test_image_id}
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${RESP.volume_id}
-  Wait Until Keyword Succeeds   10s     1s
+  Wait Until Keyword Succeeds   1m  3s
   ...   check volume is gone    url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=image-${test_image_id_from_vol}
 

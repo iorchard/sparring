@@ -158,7 +158,7 @@ Create a floating ip with the server port
 
 # used by compute/05_server.robot
 Check if the floating ip is active
-  Wait Until Keyword Succeeds   10s   2s
+  Wait Until Keyword Succeeds   1m   3s
   ...       check floating ip is active     url=${NETWORK_SERVICE}
 
 # used by compute/05_server.robot

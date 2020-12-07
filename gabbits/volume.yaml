@@ -235,9 +235,20 @@ tests:
   response_json_paths:
     $.snapshot.name: $ENVIRON['TEST_SNAPSHOT_NAME_NEW']
 
+# used by volume/03_volume.robot
+- name: Get a snapshot id of image from server
+  GET: /$ENVIRON['PROJECT_ID']/snapshots
+  status: 200
+  response_store_value:
+    $.snapshots[0].id: snapshot_id
+#    $.snapshots[?name = "$ENVIRON['SNAPSHOT_NAME']"].id: snapshot_id
+
 #
 # clean resources
 #
+- name: clean snapshot from image
+  DELETE: /$ENVIRON['PROJECT_ID']/snapshots/$ENVIRON['TEST_SNAPSHOT_ID']
+  status: 202
 - name: clean snapshot
   DELETE: /$ENVIRON['TEST_PROJECT_ID']/snapshots/$ENVIRON['TEST_SNAPSHOT_ID']
   status: 202

@@ -38,7 +38,7 @@ cleanup () {
             --console verbose \
             --consolecolors auto \
             --outputdir output \
-            cleanup
+            cleanup.robot
 }
 USAGE () {
     echo "USAGE: $0 {-h|-e|-r|-t|-v}" 1>&2

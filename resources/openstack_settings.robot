@@ -79,3 +79,9 @@ ${TEST_QUOTA_CORES}         10
 ${TEST_AGGREGATE_NAME}      sparring-aggregate
 ${TEST_SERVER_NAME}         sparring-server
 ${TEST_SERVER_DESC}         Test Sparring Server
+${TEST_FLAVOR2_NAME}        sparring-flavor2
+${TEST_FLAVOR2_VCPUS}       2
+${TEST_FLAVOR2_RAM}         2048
+${TEST_FLAVOR2_DISK}        10
+@{COMPUTE_HOSTS}            taco2-comp1     taco2-comp2
+${TEST_IMAGE_FROM_SERVER}   sparring-image-from-server

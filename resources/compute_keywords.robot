@@ -18,6 +18,9 @@ Clean compute resources
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/aggregate.txt
   ${test_aggregate_id} =   Run Keyword If  ${rc} == 0
   ...                       Get File    ${TEMPDIR}/aggregate.txt
+  ${rc} =   Run And Return Rc   ls ${TEMPDIR}/flavor2.txt
+  ${test_flavor2_id} =   Run Keyword If  ${rc} == 0
+  ...                       Get File    ${TEMPDIR}/flavor2.txt
   ${rc} =   Run And Return Rc   ls ${TEMPDIR}/flavor.txt
   ${test_flavor_id} =   Run Keyword If  ${rc} == 0
   ...                       Get File    ${TEMPDIR}/flavor.txt
@@ -35,6 +38,8 @@ Clean compute resources
   ...                           TEST_SERVER_ID=${test_server_id}
   Run Keyword And Ignore Error  clean flavor    url=${COMPUTE_SERVICE}
   ...                           TEST_FLAVOR_ID=${test_flavor_id}
+  Run Keyword And Ignore Error  clean flavor    url=${COMPUTE_SERVICE}
+  ...                           TEST_FLAVOR_ID=${test_flavor2_id}
 
 #
 # hypervisor
@@ -142,7 +147,7 @@ Create a server with a port and a volume
   Create File   ${TEMPDIR}/server.txt   ${RESP.test_server_id}
 
 Check if the server is active
-  Wait Until Keyword Succeeds   30s   3s
+  Wait Until Keyword Succeeds   2m   3s
   ...   check server is active    url=${COMPUTE_SERVICE}
 
 Check if the created server is in server list
@@ -165,6 +170,12 @@ Check if the server has the floating ip
   check server has floating ip      url=${COMPUTE_SERVICE}
   ...                   TEST_NETWORK_NAME=${TEST_NETWORK_NAME}
 
+Create an image from the server
+  &{RESP} =     create image from server  url=${COMPUTE_SERVICE}
+  ...                       TEST_IMAGE_FROM_SERVER=${TEST_IMAGE_FROM_SERVER}
+  Set Environment Variable  TEST_IMAGE_FROM_SERVER_ID  ${RESP.test_image_from_server_id}
+  Create File   ${TEMPDIR}/image_from_server.txt   ${RESP.test_image_from_server_id}
+
 Attach the volume to the server
   # Change auth token to the default.
   User gets auth token 
@@ -175,3 +186,97 @@ Check if the volume is attached to the server
 
 Check if the server has the volume
   check server has volume   url=${COMPUTE_SERVICE}
+
+#
+# action
+#
+Reboot the server
+  reboot server     url=${COMPUTE_SERVICE}
+
+Stop the server
+  stop server     url=${COMPUTE_SERVICE}
+
+Check if the server is stopped
+  Wait Until Keyword Succeeds   1m   3s
+  ...   check server is stopped     url=${COMPUTE_SERVICE}
+
+Start the server
+  start server     url=${COMPUTE_SERVICE}
+
+Pause the server
+  pause server     url=${COMPUTE_SERVICE}
+
+Check if the server is paused
+  Wait Until Keyword Succeeds   1m   3s
+  ...   check server is paused     url=${COMPUTE_SERVICE}
+
+Unpause the server
+  unpause server     url=${COMPUTE_SERVICE}
+
+Create a new flavor
+  &{RESP} =     create flavor   url=${COMPUTE_SERVICE}
+  ...               TEST_FLAVOR_NAME=${TEST_FLAVOR2_NAME}
+  ...               TEST_FLAVOR_VCPUS=${TEST_FLAVOR2_VCPUS}
+  ...               TEST_FLAVOR_RAM=${TEST_FLAVOR2_RAM}
+  ...               TEST_FLAVOR_DISK=${TEST_FLAVOR2_DISK}
+  Set Environment Variable  TEST_FLAVOR2_ID  ${RESP.test_flavor_id}
+  Create File   ${TEMPDIR}/flavor2.txt   ${RESP.test_flavor_id}
+
+Resize the server to the new flavor
+  resize server to new flavor   url=${COMPUTE_SERVICE}
+
+Check if the server is in verify resize
+  Wait Until Keyword Succeeds   1m   3s
+  ...   check server is in verify resize     url=${COMPUTE_SERVICE}
+
+Confirm a resize action for the server
+  confirm resize action for server  url=${COMPUTE_SERVICE}
+
+Delete the old flavor
+  delete old flavor     url=${COMPUTE_SERVICE}
+
+Check if the old flavor is gone
+  Wait Until Keyword Succeeds   1m   3s
+  ...   check old flavor is gone  url=${COMPUTE_SERVICE}
+
+Rebuild the server
+  rebuild server    url=${COMPUTE_SERVICE}
+
+Check where the server is in
+  &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
+  Set Environment Variable  TEST_SERVER_HOST  ${RESP.test_server_host}
+
+Migrate the server
+  # Get Index of TEST_SERVER_HOST in @COMPUTE_HOSTS
+  ${hostno} =   Get Length  ${COMPUTE_HOSTS}
+  ${x} =   Get Index From List   ${COMPUTE_HOSTS}  $ENVIRON['TEST_SERVER_HOST']
+  ${y} =   Evaluate     (${x}+1)% ${hostno}
+  ${target_host} =  Get From List   ${COMPUTE_HOSTS}    ${y}
+  migrate server    url=${COMPUTE_SERVICE}
+  ...               TARGET_HOST=${target_host}
+
+Live-Migrate the server
+  live-migrate server    url=${COMPUTE_SERVICE}
+ 
+Check if the server is migrating
+  &{RESP} =     Wait Until Keyword Succeeds     1m  3s
+  ...               check server is migrating     url=${COMPUTE_SERVICE}
+  Set Environment Variable  TEST_SERVER_MIGRATION_ID  ${RESP.test_server_migration_id}
+
+Abort live-migration of the server
+  abort live-migration of server    url=${COMPUTE_SERVICE}
+
+Check if the live-migraion is aborted
+  Wait Until Keyword Succeeds   1m   3s
+  ...   check live-migration aborted      url=${COMPUTE_SERVICE}
+
+Check if the server is migrating in detail
+  Check if the server is migrating
+  Wait Until Keyword Succeeds   1m   3s
+  ...   check server is migrating in detail   url=${COMPUTE_SERVICE}
+
+Check if the server is migrated
+  &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
+  #Log   ${RESP.test_server_host}:%{TEST_SERVER_HOST}   console=True
+  Should Not Be Equal  ${RESP.test_server_host}   %{TEST_SERVER_HOST}
+

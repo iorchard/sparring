@@ -2,6 +2,7 @@ defaults:
   verbose: True
   request_headers:
     x-auth-token: $ENVIRON['SERVICE_TOKEN']
+    OpenStack-API-Version: compute 2.79
 
 tests:
 - name: connect to compute service
@@ -229,6 +230,156 @@ tests:
   status: 200
   response_json_paths:
       $.server["os-extended-volumes:volumes_attached"][1].id: $ENVIRON['TEST_VOLUME_ID2']
+
+#
+# action
+#
+- name: reboot server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    reboot:
+        type: HARD
+  status: 202
+
+- name: stop server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    os-stop: null
+  status: 202
+
+- name: check server is stopped
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_json_paths:
+    $.server.status: SHUTOFF
+
+- name: start server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    os-start: null
+  status: 202
+
+- name: pause server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    pause: null
+  status: 202
+
+- name: check server is paused
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_json_paths:
+    $.server.status: PAUSED
+
+- name: unpause server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    unpause: null
+  status: 202
+
+- name: resize server to new flavor
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    resize:
+      flavorRef: $ENVIRON['TEST_FLAVOR2_ID']
+  status: 202
+
+- name: check server is in verify resize
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_json_paths:
+    $.server.status: VERIFY_RESIZE
+
+- name: confirm resize action for server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    confirmResize: null
+  status: 204
+
+- name: delete old flavor
+  DELETE: /flavors/$ENVIRON['TEST_FLAVOR_ID']
+  status: 202
+
+- name: check old flavor is gone
+  GET: /flavors/$ENVIRON['TEST_FLAVOR_ID']
+  status: 404
+
+- name: rebuild server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    rebuild:
+      imageRef: $ENVIRON['TEST_IMAGE_ID']
+  status: 202
+
+- name: check where server is in
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']
+  status: 200
+  response_store_value:
+    $.server["OS-EXT-SRV-ATTR:host"]: test_server_host
+
+- name: migrate server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    migrate:
+      host: $ENVIRON['TARGET_HOST']
+  status: 202
+
+- name: live-migrate server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    os-migrateLive:
+      host: null
+      block_migration: false
+  status: 202
+
+- name: check server is migrating
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']/migrations
+  status: 200
+  response_store_value:
+    $.migrations[0].id: test_server_migration_id
+
+- name: abort live-migration of server
+  DELETE: /servers/$ENVIRON['TEST_SERVER_ID']/migrations/$ENVIRON['TEST_SERVER_MIGRATION_ID']
+  status: 202
+
+- name: check live-migration aborted
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']/migrations/$ENVIRON['TEST_SERVER_MIGRATION_ID']
+  status: 404
+
+- name: check server is migrating in detail
+  GET: /servers/$ENVIRON['TEST_SERVER_ID']/migrations/$ENVIRON['TEST_SERVER_MIGRATION_ID']
+  status: 200
+
+- name: create image from server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    createImage:
+      name: $ENVIRON['TEST_IMAGE_FROM_SERVER']
+  status: 202
+  response_store_value:
+    $.image_id: test_image_from_server_id
 
 #
 # clean resources

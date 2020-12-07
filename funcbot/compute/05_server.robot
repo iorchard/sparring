@@ -53,6 +53,12 @@ Check if the floating ip is mapped to the server port
   When Check if the floating ip is mapped to the server port
   Then Check if the server has the floating ip
 
+Create an image from the server
+  [Tags]    compute     critical
+  Given Compute service is available
+  When Create an image from the server
+  Then Check if the created image from the server is active
+
 Create a volume and attach it to the server
   [Tags]    compute     critical
   Given Compute service is available

@@ -67,6 +67,13 @@ tests:
   response_json_paths:
     $.name: $ENVIRON['TEST_IMAGE_NAME']
 
+# used by compute/05_server.robot
+- name: check created image from server is active
+  GET: /images/$ENVIRON['TEST_IMAGE_FROM_SERVER_ID']
+  status: 200
+  response_json_paths:
+    $.status: active
+
 #
 # clean resources
 #
