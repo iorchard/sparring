@@ -120,3 +120,12 @@ Check if the server is migrating in detail
   Then Check if the server is active 
   and Check if the server is migrated
 
+Evacuate the server
+  [Tags]    compute     critical
+  Given Compute service is available
+  and Stop the server
+  and Check if the server is stopped
+  and Set forced_down flag for the service
+  When Evacuate the server
+  Then Check if the server is evacuated
+  and Reset forced_down flag for the service

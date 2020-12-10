@@ -3,6 +3,7 @@ Compute service is available
   connect to compute service  COMPUTE_SERVICE=${COMPUTE_SERVICE}
 
 Clean the compute resources if test failed
+  Run Keyword If Any Tests Failed   Reset forced_down flag for the service
   Run Keyword If Any Tests Failed   Clean compute resources
   Run Keyword If Any Tests Failed   Clean network resources
   Run Keyword If Any Tests Failed   Clean volume resources
@@ -28,6 +29,7 @@ Clean compute resources
   ${test_server_id} =   Run Keyword If  ${rc} == 0
   ...                       Get File    ${TEMPDIR}/server.txt
 
+  Run Keyword And Ignore Error  Reset forced_down flag for the service
   Run Keyword And Ignore Error  remove host from aggregate
   ...                           url=${COMPUTE_SERVICE}
   ...                           TEST_AGGREGATE_ID=${test_aggregate_id}
@@ -249,7 +251,7 @@ Check where the server is in
 Migrate the server
   # Get Index of TEST_SERVER_HOST in @COMPUTE_HOSTS
   ${hostno} =   Get Length  ${COMPUTE_HOSTS}
-  ${x} =   Get Index From List   ${COMPUTE_HOSTS}  $ENVIRON['TEST_SERVER_HOST']
+  ${x} =   Get Index From List   ${COMPUTE_HOSTS}  %{TEST_SERVER_HOST}
   ${y} =   Evaluate     (${x}+1)% ${hostno}
   ${target_host} =  Get From List   ${COMPUTE_HOSTS}    ${y}
   migrate server    url=${COMPUTE_SERVICE}
@@ -279,4 +281,32 @@ Check if the server is migrated
   &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
   #Log   ${RESP.test_server_host}:%{TEST_SERVER_HOST}   console=True
   Should Not Be Equal  ${RESP.test_server_host}   %{TEST_SERVER_HOST}
+  Set Environment Variable  TEST_SERVER_HOST  ${RESP.test_server_host}
+
+Set forced_down flag for the service
+  &{RESP} =     get service id of host  url=${COMPUTE_SERVICE}
+  Set Environment Variable  SERVICE_ID  ${RESP.service_id}
+
+  set forced_down flag for service      url=${COMPUTE_SERVICE}
+
+Evacuate the server
+  # Get Index of TEST_SERVER_HOST in @COMPUTE_HOSTS
+  ${hostno} =   Get Length  ${COMPUTE_HOSTS}
+  ${x} =   Get Index From List   ${COMPUTE_HOSTS}  %{TEST_SERVER_HOST}
+  ${y} =   Evaluate     (${x}+1)% ${hostno}
+  ${target_host} =  Get From List   ${COMPUTE_HOSTS}    ${y}
+  evacuate server       url=${COMPUTE_SERVICE}
+  ...                   TARGET_HOST=${target_host}
+  
+Check if the server is evacuated
+  Wait Until Keyword Succeeds   1m   3s  The server is evacuated
+
+The server is evacuated
+  &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
+  Log   ${RESP.test_server_host}:%{TEST_SERVER_HOST}   console=True
+  Should Not Be Equal  ${RESP.test_server_host}   %{TEST_SERVER_HOST}
+  Set Environment Variable  TEST_SERVER_HOST  ${RESP.test_server_host}
+
+Reset forced_down flag for the service
+  reset forced_down flag for service    url=${COMPUTE_SERVICE}
 

@@ -210,6 +210,17 @@ tests:
   response_json_paths:
       $.server.addresses.$ENVIRON['TEST_NETWORK_NAME'][?addr = "$ENVIRON['TEST_FLOATINGIP_ADDR']"]["OS-EXT-IPS:type"]: "floating"
 
+- name: create image from server
+  POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
+  request_headers:
+    content-type: application/json
+  data:
+    createImage:
+      name: $ENVIRON['TEST_IMAGE_FROM_SERVER']
+  status: 202
+  response_store_value:
+    $.image_id: test_image_from_server_id
+
 - name: attach volume to server
   POST: /servers/$ENVIRON['TEST_SERVER_ID']/os-volume_attachments
   request_headers:
@@ -370,16 +381,40 @@ tests:
   GET: /servers/$ENVIRON['TEST_SERVER_ID']/migrations/$ENVIRON['TEST_SERVER_MIGRATION_ID']
   status: 200
 
-- name: create image from server
+- name: get service id of host
+  GET: /os-services?binary=nova-compute&host=$ENVIRON['TEST_SERVER_HOST']
+  status: 200
+  response_store_value:
+    $.services[?host = "$ENVIRON['TEST_SERVER_HOST']"].id: service_id
+
+- name: set forced_down flag for service
+  PUT: /os-services/$ENVIRON['SERVICE_ID']
+  request_headers:
+    content-type: application/json
+  data:
+    forced_down: true
+  status: 200
+  response_json_paths:
+    $.service.forced_down: true
+
+- name: evacuate server
   POST: /servers/$ENVIRON['TEST_SERVER_ID']/action
   request_headers:
     content-type: application/json
   data:
-    createImage:
-      name: $ENVIRON['TEST_IMAGE_FROM_SERVER']
-  status: 202
-  response_store_value:
-    $.image_id: test_image_from_server_id
+    evacuate:
+      host: $ENVIRON['TARGET_HOST']
+  status: 200
+
+- name: reset forced_down flag for service
+  PUT: /os-services/$ENVIRON['SERVICE_ID']
+  request_headers:
+    content-type: application/json
+  data:
+    forced_down: false
+  status: 200
+  response_json_paths:
+    $.service.forced_down: false
 
 #
 # clean resources
