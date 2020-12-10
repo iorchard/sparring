@@ -32,7 +32,12 @@ Clean volume resources
   ...   Get File    ${TEMPDIR}/volume_type.txt
 
   # Get snapshot id of "snapshot for sparring-image-from-server" name
-  &{RESP} =     Get a snapshot id of image from server  url=${VOLUME_SERVICE}
+  ${status}     ${result} =     Run Keyword And Ignore Error    
+  ...           Get a snapshot id of image from server  url=${VOLUME_SERVICE}
+  ...               SNAPSHOT_NAME="snapshot for ${TEST_IMAGE_FROM_SERVER}"
+  ...               PROJECT_ID=${PROJECT_ID}
+  &{RESP} =     Run Keyword If  '${status}' == 'PASS'
+  ...           Get a snapshot id of image from server  url=${VOLUME_SERVICE}
   ...               SNAPSHOT_NAME="snapshot for ${TEST_IMAGE_FROM_SERVER}"
   ...               PROJECT_ID=${PROJECT_ID}
   Run Keyword And Ignore Error  clean snapshot from image  url=${VOLUME_SERVICE}
