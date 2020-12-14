@@ -1,7 +1,7 @@
 *** Variables ***
 
 #
-# Service Endpoint
+# Service Endpoints
 #
 ${IDENTITY_SERVICE}     http://keystone.openstack.svc.cluster.local:8080/v3
 ${NETWORK_SERVICE}      http://neutron.openstack.svc.cluster.local:8080/v2.0
@@ -17,10 +17,30 @@ ${USER_PASSWORD}        password
 ${DOMAIN_NAME}          default
 ${PROJECT_NAME}         admin
 
+# network test
+# PUBLIC_NETWORK_ID: openstack external network ID - used by floating ip test.
+# Create it with 'openstack network create' command before running the test.
+#${PUBLIC_NETWORK_ID}   <external network ID>
+${PUBLIC_NETWORK_ID}    6e2abf30-6093-4b6a-9db4-f5e70f629975
+
+# volume test
+# admin project id used by volume test. Put admin project id here.
+${PROJECT_ID}               00bce98645894a8c9bee220b1a249a7b
+# Define volume backend name
+${VOLUME_BACKEND_NAME}      rbd1
+
+# compute test
+# Define compute host list
+@{COMPUTE_HOSTS}            taco2-comp1     taco2-comp2
+
+
+##########################################
+# Do not touch below!!!                  #
+##########################################
+
 #
 # identity test
 #
-# Do not touch below!
 ${TEST_PROJECT_NAME}    sparring
 ${TEST_PROJECT_DESC}    Sparring Test Project
 ${TEST_USER_NAME}       sparring-user
@@ -29,13 +49,6 @@ ${TEST_USER_PASSWORD}   password
 #
 # network test
 #
-
-# PUBLIC_NETWORK_ID: openstack external network ID - used by floating ip test.
-# Create it with 'openstack network create' command before running the test.
-#${PUBLIC_NETWORK_ID}   <external network ID>
-${PUBLIC_NETWORK_ID}    6e2abf30-6093-4b6a-9db4-f5e70f629975
-
-# Do not touch below!
 ${TEST_NETWORK_NAME}    sparring-network
 ${TEST_SUBNET_NAME}     sparring-subnet
 ${TEST_SUBNET_CIDR}     172.24.1.0/24
@@ -59,15 +72,12 @@ ${TEST_IMAGE_FILE}                  /tmp/cirros.img
 #
 # volume test
 #
-# admin project id used by volume test. Put admin project id here.
-${PROJECT_ID}               00bce98645894a8c9bee220b1a249a7b
 ${TEST_VOLUME_TYPE_NAME}    sparring-volume-type
-${VOLUME_BACKEND_NAME}      rbd1
-
 ${TEST_VOLUME_NAME}         sparring-volume
 ${TEST_VOLUME_SIZE}         1
 ${TEST_VOLUME_RESIZE}       2
 ${TEST_SNAPSHOT_NAME}       sparring-snapshot
+
 #
 # compute test
 #
@@ -83,5 +93,4 @@ ${TEST_FLAVOR2_NAME}        sparring-flavor2
 ${TEST_FLAVOR2_VCPUS}       2
 ${TEST_FLAVOR2_RAM}         2048
 ${TEST_FLAVOR2_DISK}        10
-@{COMPUTE_HOSTS}            taco2-comp1     taco2-comp2
 ${TEST_IMAGE_FROM_SERVER}   sparring-image-from-server
