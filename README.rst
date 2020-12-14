@@ -11,7 +11,19 @@ I recommend a container way since it's simpler.
 Run a sparring container
 --------------------------
 
-Settins
+Build (Optional)
+++++++++++++++++++
+
+You do not need to build a sparring image since it can be pulled from
+docker hub (jijisa/sparring:latest).
+
+But if you want to build a sparring image by yourself, run docker build.::
+
+   $ docker build -t sparring .
+
+Then use a local sparring image when you run a container.
+
+Setup
 +++++++++
 
 Copy ${HOME}/sparring/resources/openstack_settings.robot file to /tmp and
@@ -74,7 +86,7 @@ There are two robots in Sparring.
 * perfbot: performance testing robot (Not yet included! It will be included
   in the future.)
 
-Use sparring command to run them.
+Use docker command to run them.
 
 List test suites in funcbot::
 
@@ -90,7 +102,7 @@ To run all test suites in funcbot::
    $ docker run --rm -n sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
-      -v ${HOME}/sparring/output:/sparring/funcbot/output \
+      -v /tmp/output:/sparring/funcbot/output \
       jijisa/sparring --funcbot 
 
 To run only identity and network test suites in funcbot::
@@ -98,11 +110,11 @@ To run only identity and network test suites in funcbot::
    $ docker run --rm -n sparring
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
-      -v ${HOME}/sparring/output:/sparring/funcbot/output \
+      -v /tmp/output:/sparring/funcbot/output \
       jijisa/sparring --funcbot identity network
 
 The result files (output.xml, log.html, report.html) will be in 
-${HOME}/sparring/output/ directory.
+/tmp/output/ directory.
 
 
 Install and Run on bare metal
@@ -129,8 +141,8 @@ install robotframework, gabbi, and robotframework-gabbilibrary.::
    (sparring) $ python -m pip install \
       dist/robotframework_gabbilibrary-0.1.1-py3-none-any.whl
 
-Settings
-+++++++++
+Setup
+++++++
 
 Edit .bashrc to include python virtualenv and sparring bin path.::
 
