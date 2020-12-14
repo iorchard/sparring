@@ -1,4 +1,6 @@
 FROM    debian:buster-slim
+ENV     TINI_VERSION v0.19.0
+ENV     CIRROS_VERSION 0.5.1
 ADD     https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 ADD     http://download.cirros-cloud.net/${CIRROS_VERSION}/cirros-${CIRROS_VERSION}-x86_64-disk.img /tmp/cirros.img
 RUN     apt update && \
