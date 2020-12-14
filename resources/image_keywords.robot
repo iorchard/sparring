@@ -43,7 +43,7 @@ Upload the image data
   # Is ${TEST_IMAGE_FILE} exist?
   Run Keyword If  os.path.exists("${TEST_IMAGE_FILE}") == False
   ...   Get the image file
-  Move File     ${TEST_IMAGE_FILE}  ${GABBIT_PATH}/
+  Copy File     ${TEST_IMAGE_FILE}  ${GABBIT_PATH}/
   ${path}   ${img_file} =   Split Path  ${TEST_IMAGE_FILE}
   upload image data     url=${IMAGE_SERVICE}
   ...                   IMAGE_FILE=${img_file}

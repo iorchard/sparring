@@ -6,12 +6,14 @@ ADD     http://download.cirros-cloud.net/${CIRROS_VERSION}/cirros-${CIRROS_VERSI
 ADD     . /sparring
 RUN     apt update && \
         DEBIAN_FRONTEND=noninteractive \
-            apt install -y python3 python3-dev python3-pip && \
+            apt install -y python3 python3-dev python3-pip curl && \
         python3 -m pip install wheel && \
         python3 -m pip install gabbi robotframework && \
         cd /sparring/robotframework-gabbilibrary && \
         python3 setup.py bdist_wheel && \
-        python3 -m pip install dist/robotframework_gabbilibrary-*.whl
+        python3 -m pip install dist/robotframework_gabbilibrary-*.whl && \
+        chmod +x /tini && \
+        echo $CIRROS_VERSION > /CIRROS_VERSION
 
 ENTRYPOINT  ["/tini", "--", "/sparring/bin/sparring"]
 CMD         ["--run-funcbot"]
