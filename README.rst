@@ -90,7 +90,7 @@ Use docker command to run them.
 
 List test suites in funcbot::
 
-   $ docker run --rm -n sparring jijisa/sparring --list-funcbot
+   $ docker run --rm --name sparring jijisa/sparring --list-funcbot
    identity
    network
    image
@@ -99,19 +99,19 @@ List test suites in funcbot::
 
 To run all test suites in funcbot::
 
-   $ docker run --rm -n sparring \
+   $ docker run --rm --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/sparring/funcbot/output \
-      jijisa/sparring --funcbot 
+      jijisa/sparring --run-funcbot 
 
 To run only identity and network test suites in funcbot::
 
-   $ docker run --rm -n sparring
+   $ docker run --rm --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/sparring/funcbot/output \
-      jijisa/sparring --funcbot identity network
+      jijisa/sparring --run-funcbot identity network
 
 The result files (output.xml, log.html, report.html) will be in 
 /tmp/output/ directory.
@@ -223,9 +223,9 @@ List test suites in funcbot::
 
 To run all test suites in funcbot::
 
-   $ sparring --funcbot 
+   $ sparring --run-funcbot 
 
 To run only identity and network test suites in funcbot::
 
-   $ sparring --funcbot identity network
+   $ sparring --run-funcbot identity network
 
