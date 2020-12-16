@@ -61,22 +61,31 @@ Clean volume resources
   ...   image is gone       url=${IMAGE_SERVICE}
   ...                       TEST_IMAGE_ID=${test_image_id_from_vol}
 
-  Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
-  ...                           TEST_VOLUME_ID=${test_volume_id2}
-  Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
-  ...                           TEST_VOLUME_ID=${test_volume_id}
-  Wait Until Keyword Succeeds   1m  3s
-  ...   check volume is gone     url=${VOLUME_SERVICE}
   # There will be a readonly image-TEST_IMAGE_ID volume when upload volume.
   # need to delete it manually.
   # Get readonly volume id from image-TEST_IMAGE_ID name.
-  &{RESP} =     get volume id from volume name      url=${VOLUME_SERVICE}
+  ${status}     ${result} =     Run Keyword And Ignore Error    
+  ...           get volume id from volume name      url=${VOLUME_SERVICE}
+  ...                           TEST_VOLUME_NAME=image-${test_image_id}
+  &{RESP} =     Run Keyword If  '${status}' == 'PASS'
+  ...           get volume id from volume name      url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_NAME=image-${test_image_id}
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${RESP.volume_id}
   Wait Until Keyword Succeeds   1m  3s
   ...   check volume is gone    url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=image-${test_image_id_from_vol}
+
+  Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
+  ...                           TEST_VOLUME_ID=${test_volume_id2}
+  Wait Until Keyword Succeeds   1m  3s
+  ...   check volume is gone    url=${VOLUME_SERVICE}
+  ...                           TEST_VOLUME_ID=${test_volume_id2}
+  Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
+  ...                           TEST_VOLUME_ID=${test_volume_id}
+  Wait Until Keyword Succeeds   1m  3s
+  ...   check volume is gone    url=${VOLUME_SERVICE}
+  ...                           TEST_VOLUME_ID=${test_volume_id}
 
   User gets auth token
 

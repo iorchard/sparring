@@ -6,7 +6,7 @@ ADD     http://download.cirros-cloud.net/${CIRROS_VERSION}/cirros-${CIRROS_VERSI
 ADD     . /sparring
 RUN     apt update && \
         DEBIAN_FRONTEND=noninteractive \
-            apt install -y python3 python3-dev python3-pip curl && \
+            apt install -y python3 python3-dev python3-pip curl vim-tiny && \
         python3 -m pip install wheel && \
         python3 -m pip install gabbi robotframework && \
         cd /sparring/robotframework-gabbilibrary && \

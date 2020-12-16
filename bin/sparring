@@ -40,11 +40,16 @@ cleanup () {
             --outputdir output \
             cleanup.robot
 }
+show_openstack_settings () {
+    RESOURCES_DIR="$FUNCBOT_DIR/../resources"
+    cat "$RESOURCES_DIR/openstack_settings.robot"
+}
 USAGE () {
-    echo "USAGE: $0 {-h|-e|-r|-t|-v}" 1>&2
+    echo "USAGE: $0 {-h|-c|-s|-r|-l|-R|-L}" 1>&2
     echo ""
     echo " -h --help                            Display this help message."
     echo " -c --cleanup                         Clean up test resources."
+    echo " -s --show-os-settings                Show openstack settings."
     echo " -r --run-funcbot [TEST_SUITE]...     Run funcbot."
     echo " -l --list-funcbot                    List funcbot test suites."
     echo " -R --run-perfbot [TEST_SUITE]...     Run perfbot."
@@ -67,6 +72,10 @@ do
             ;;
         -c | --cleanup)
             cleanup 
+            break
+            ;;
+        -s | --show-os-settings)
+            show_openstack_settings
             break
             ;;
         -r | --run-funcbot)
