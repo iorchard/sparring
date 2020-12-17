@@ -127,11 +127,12 @@ Create a volume and a port for a server
   Add the volume type to test project
   Check if the test project has an access to the volume type
 
-  # Change auth token to test project scoped token for volume creation
-  User gets auth test project scoped token 
   Create an image
   Upload the image data
   Check if the created image is in image list and active
+
+  # Change auth token to test project scoped token for volume creation
+  User gets auth test project scoped token 
   Create a volume
   Check if the volume is available
 

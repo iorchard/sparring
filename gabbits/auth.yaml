@@ -18,9 +18,7 @@ tests:
             password: $ENVIRON['USER_PASSWORD']
       scope:
         project:
-          domain:
-            name: $ENVIRON['DOMAIN_NAME']
-          name: $ENVIRON['TEST_PROJECT_NAME']
+          id: $ENVIRON['TEST_PROJECT_ID']
   response_headers_store_value:
     X-Subject-Token: auth_token
 
