@@ -50,14 +50,14 @@ Clean volume resources
 
   Run Keyword And Ignore Error  clean snapshot   url=${VOLUME_SERVICE}
   ...                           TEST_SNAPSHOT_ID=${test_snapshot_id}
-  Wait Until Keyword Succeeds   1m   3s
+  Wait Until Keyword Succeeds   30s   3s
   ...   check snapshot is gone     url=${VOLUME_SERVICE}
 
   Clean image resources
 
   Run Keyword And Ignore Error  clean image   url=${IMAGE_SERVICE}
   ...                           TEST_IMAGE_ID=${test_image_id_from_vol}
-  Wait Until Keyword Succeeds   1m  3s
+  Wait Until Keyword Succeeds   30s  3s
   ...   image is gone       url=${IMAGE_SERVICE}
   ...                       TEST_IMAGE_ID=${test_image_id_from_vol}
 
@@ -72,24 +72,24 @@ Clean volume resources
   ...                           TEST_VOLUME_NAME=image-${test_image_id}
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${RESP.volume_id}
-  Wait Until Keyword Succeeds   1m  3s
+  Wait Until Keyword Succeeds   30s  3s
   ...   check volume is gone    url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=image-${test_image_id_from_vol}
 
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${test_volume_id2}
-  Wait Until Keyword Succeeds   1m  3s
+  Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s  3s
   ...   check volume is gone    url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${test_volume_id2}
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${test_volume_id}
-  Wait Until Keyword Succeeds   1m  3s
+  Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s  3s
   ...   check volume is gone    url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${test_volume_id}
 
   User gets auth token
 
-  Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s   2s
+  Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s   3s
   ...   clean volume type       url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_TYPE_ID=${test_volume_type_id}
 
@@ -148,7 +148,7 @@ Create a volume
   Create File    ${TEMPDIR}/volume.txt   ${RESP.test_volume_id}
 
 Check if the volume is available
-  Wait Until Keyword Succeeds   1m   1s
+  Wait Until Keyword Succeeds   30s   3s
   ...   check volume is available   url=${VOLUME_SERVICE}
 
 Show the volume info
@@ -164,7 +164,7 @@ Resize the volume
   ...               TEST_VOLUME_RESIZE=${TEST_VOLUME_RESIZE}
 
 Check if the volume is resized
-  Wait Until Keyword Succeeds   1m   1s
+  Wait Until Keyword Succeeds   30s   3s
   ...   check volume is resized     url=${VOLUME_SERVICE}
   ...               TEST_VOLUME_RESIZE=${TEST_VOLUME_RESIZE}
 
@@ -182,7 +182,7 @@ Create a snapshot
   Create File    ${TEMPDIR}/snapshot.txt   ${RESP.test_snapshot_id}
 
 Check if the snapshot is available
-  Wait Until Keyword Succeeds   1m   1s
+  Wait Until Keyword Succeeds   30s   3s
   ...   check snapshot is available     url=${VOLUME_SERVICE}
 
 Show the snapshot info
@@ -208,7 +208,7 @@ Upload the volume to image service
   Create File    ${TEMPDIR}/image_from_vol.txt   ${RESP.test_image_id_from_vol}
 
 Check if the image from vol is active
-  Wait Until Keyword Succeeds   1m   1s
+  Wait Until Keyword Succeeds   30s   3s
   ...   check image is active       url=${IMAGE_SERVICE}
   ...                               TEST_IMAGE_ID=%{TEST_IMAGE_ID_FROM_VOL}
 
