@@ -13,4 +13,5 @@ Library         GabbiLibrary    ${VOLUME_SERVICE}     ${GABBIT_PATH}
 Clean all volume resources
   [Tags]    volume
   Clean volume resources
+  Clean image resources
   Clean the project

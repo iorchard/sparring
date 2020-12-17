@@ -22,7 +22,8 @@ run_funcbot () {
     done
     # Okay. Let's go.
     cd $FUNCBOT_DIR
-    robot   --exitonfailure \
+    #robot   --exitonfailure \
+    robot   \
             --exitonerror \
             --critical critical \
             --console verbose \

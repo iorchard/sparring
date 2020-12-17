@@ -16,7 +16,6 @@ User gets auth test project scoped token
   ...                       USER_NAME=${USER_NAME}
   ...                       DOMAIN_NAME=${DOMAIN_NAME}
   ...                       USER_PASSWORD=${USER_PASSWORD}
-  ...                       TEST_PROJECT_NAME=${TEST_PROJECT_NAME}
   Set Environment Variable  SERVICE_TOKEN   ${RESP.auth_token}
 
 Clean the project if test failed

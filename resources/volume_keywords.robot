@@ -53,8 +53,6 @@ Clean volume resources
   Wait Until Keyword Succeeds   30s   3s
   ...   check snapshot is gone     url=${VOLUME_SERVICE}
 
-  Clean image resources
-
   Run Keyword And Ignore Error  clean image   url=${IMAGE_SERVICE}
   ...                           TEST_IMAGE_ID=${test_image_id_from_vol}
   Wait Until Keyword Succeeds   30s  3s
