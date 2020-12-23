@@ -359,7 +359,7 @@ tests:
     content-type: application/json
   data:
     os-migrateLive:
-      host: null
+      host: $ENVIRON['TARGET_HOST']
       block_migration: false
   status: 202
 

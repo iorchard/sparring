@@ -259,7 +259,13 @@ Migrate the server
   ...               TARGET_HOST=${target_host}
 
 Live-Migrate the server
-  live-migrate server    url=${COMPUTE_SERVICE}
+  # Get Index of TEST_SERVER_HOST in @COMPUTE_HOSTS
+  ${hostno} =   Get Length  ${COMPUTE_HOSTS}
+  ${x} =   Get Index From List   ${COMPUTE_HOSTS}  %{TEST_SERVER_HOST}
+  ${y} =   Evaluate     (${x}+1)% ${hostno}
+  ${target_host} =  Get From List   ${COMPUTE_HOSTS}    ${y}
+  live-migrate server   url=${COMPUTE_SERVICE}
+  ...                   TARGET_HOST=${target_host}
  
 Check if the server is migrating
   &{RESP} =     Wait Until Keyword Succeeds     1m  3s
