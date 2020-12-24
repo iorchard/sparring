@@ -50,12 +50,12 @@ Clean volume resources
 
   Run Keyword And Ignore Error  clean snapshot   url=${VOLUME_SERVICE}
   ...                           TEST_SNAPSHOT_ID=${test_snapshot_id}
-  Wait Until Keyword Succeeds   30s   3s
+  Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s   3s
   ...   check snapshot is gone     url=${VOLUME_SERVICE}
 
   Run Keyword And Ignore Error  clean image   url=${IMAGE_SERVICE}
   ...                           TEST_IMAGE_ID=${test_image_id_from_vol}
-  Wait Until Keyword Succeeds   30s  3s
+  Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s  3s
   ...   image is gone       url=${IMAGE_SERVICE}
   ...                       TEST_IMAGE_ID=${test_image_id_from_vol}
 
@@ -70,7 +70,7 @@ Clean volume resources
   ...                           TEST_VOLUME_NAME=image-${test_image_id}
   Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=${RESP.volume_id}
-  Wait Until Keyword Succeeds   30s  3s
+  Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s  3s
   ...   check volume is gone    url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=image-${test_image_id_from_vol}
 
