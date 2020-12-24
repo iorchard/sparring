@@ -26,10 +26,12 @@ Then use a local sparring image when you run a container.
 Setup
 +++++++++
 
-Copy ${HOME}/sparring/resources/openstack_settings.robot file to /tmp and
+Get the sample openstack_settings.robot file to /tmp/ and
 Edit settings above "Do not touch below!!!" line.::
 
-   $ cp ${HOME}/sparring/resources/openstack_settings.robot /tmp/
+   $ docker run --rm --name sparring jijisa/sparring \
+         --show-os-settings > /tmp/openstack_settings.robot
+
    $ vi /tmp/openstack-settings.robot
    #
    # Service Endpoints
@@ -99,15 +101,16 @@ List test suites in funcbot::
 
 To run all test suites in funcbot::
 
-   $ docker run --rm --name sparring \
+   $ docker run --rm --tty --network=host \
+      --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/sparring/funcbot/output \
-      jijisa/sparring --run-funcbot 
+      jijisa/sparring
 
 To run only identity and network test suites in funcbot::
 
-   $ docker run --rm --name sparring \
+   $ docker run --rm --tty --network=host --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/sparring/funcbot/output \
