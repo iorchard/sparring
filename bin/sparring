@@ -2,11 +2,40 @@
 declare -a FUNCBOTS PERFBOTS
 FUNCBOTS=(identity network image volume compute)
 FUNCBOT_DIR=$(dirname $(realpath $0))/../funcbot
+CDBOTS=(identity network image volume compute)
+CDBOT_DIR=$(dirname $(realpath $0))/../cdbot
 
+list_cdbot () {
+    for b in ${CDBOTS[@]}; do
+        echo $b
+    done
+}
 list_funcbot () {
     for b in ${FUNCBOTS[@]}; do
         echo $b
     done
+}
+run_cdbot () {
+    # check the args
+    declare -a suites
+    [[ $# -ne 0 ]] && suites=($@) || suites=(${FUNCBOTS[@]})
+    echo ${suites[@]}
+    for i in ${suites[@]}; do
+        if [[ ! " ${CDBOTS[@]} " =~ " $i " ]]; then
+            echo "Abort: $i is not a test suite."
+            list_cdbot
+            exit 1
+        fi
+    done
+    # Okay. Let's go.
+    cd $CDBOT_DIR
+    robot   \
+            --exitonerror \
+            --critical critical \
+            --console verbose \
+            --consolecolors auto \
+            --outputdir /tmp/output \
+            "${suites[@]}"
 }
 run_funcbot () {
     # check the args
@@ -22,13 +51,12 @@ run_funcbot () {
     done
     # Okay. Let's go.
     cd $FUNCBOT_DIR
-    #robot   --exitonfailure \
     robot   \
             --exitonerror \
             --critical critical \
             --console verbose \
             --consolecolors auto \
-            --outputdir output \
+            --outputdir /tmp/output \
             "${suites[@]}"
 }
 cleanup () {
@@ -38,7 +66,7 @@ cleanup () {
             --critical critical \
             --console verbose \
             --consolecolors auto \
-            --outputdir output \
+            --outputdir /tmp/output \
             cleanup.robot
 }
 show_openstack_settings () {
@@ -46,10 +74,12 @@ show_openstack_settings () {
     cat "$RESOURCES_DIR/openstack_settings.robot"
 }
 USAGE () {
-    echo "USAGE: $0 {-h|-c|-s|-r|-l|-R|-L}" 1>&2
+    echo "USAGE: $0 {-h|-c|-d|-D|-s|-r|-l|-R|-L}" 1>&2
     echo ""
     echo " -h --help                            Display this help message."
     echo " -c --cleanup                         Clean up test resources."
+    echo " -d --run-cdbot [TEST_SUITE}...       Run Continuous Delivery test."
+    echo " -D --list-cdbot                      List cdbot test suites."
     echo " -s --show-os-settings                Show openstack settings."
     echo " -r --run-funcbot [TEST_SUITE]...     Run funcbot."
     echo " -l --list-funcbot                    List funcbot test suites."
@@ -73,6 +103,14 @@ do
             ;;
         -c | --cleanup)
             cleanup 
+            break
+            ;;
+        -d | --run-cdbot)
+            run_cdbot "$@"
+            break
+            ;;
+        -D | --list-cdbot)
+            list_cdbot
             break
             ;;
         -s | --show-os-settings)

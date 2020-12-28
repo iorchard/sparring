@@ -82,9 +82,10 @@ Add endpoint hostnames in /etc/hosts file.::
 Run
 ++++
 
-There are two robots in Sparring.
+There are three robots in Sparring.
 
 * funcbot: functional/scenario testing robot
+* cdbot: continuous delivery testing robot
 * perfbot: performance testing robot (Not yet included! It will be included
   in the future.)
 
@@ -208,9 +209,10 @@ Add endpoint hostnames in /etc/hosts file.::
 Run
 ++++
 
-There are two robots in Sparring.
+There are three robots in Sparring.
 
 * funcbot: functional/scenario testing robot
+* cdbot: continuous delivery testing robot
 * perfbot: performance testing robot (Not yet included!)
 
 Use sparring command to run them.

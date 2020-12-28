@@ -34,9 +34,28 @@ ${VOLUME_BACKEND_NAME}      rbd1
 @{COMPUTE_HOSTS}            taco2-comp1     taco2-comp2
 
 
-##########################################
-# Do not touch below!!!                  #
-##########################################
+#########################################
+# CDBOT variables                       #
+#########################################
+&{volume_svc}       url="http://cinder.openstack.svc.cluster.local:8080/"
+...                 name=cinder-api  cname=cinder-api  retcode=300
+&{image_svc}        url="http://glance.openstack.svc.cluster.local:8080/"
+...                 name=glance-api  cname=glance-api  retcode=300
+&{identity_svc}     url="http://keystone.openstack.svc.cluster.local:8080/"
+...                 name=keystone-api  cname=keystone-api  retcode=300
+&{network_svc}      url="http://neutron.openstack.svc.cluster.local:8080/"
+...                 name=neutron-server  cname=neutron-server  retcode=200
+&{compute_svc}      url="http://nova.openstack.svc.cluster.local:8080/"
+...                 name=nova-api-osapi  cname=nova-osapi  retcode=200
+
+${SSH_HOST}         taco2-ctrl1
+${SSH_PORT}         22
+${SSH_USER}         user
+${SSH_PASS}         pass
+
+#########################################
+# Do not touch below!!!                 #
+#########################################
 
 #
 # identity test
