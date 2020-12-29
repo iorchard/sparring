@@ -176,3 +176,31 @@ Check if the network quota is set
   network quota is set      url=${NETWORK_SERVICE}
   ...                       TEST_NETWORK_QUOTA=${TEST_NETWORK_QUOTA}
 
+#
+# perfbot
+#
+User creates port
+  [Arguments]   ${network}   ${name}
+  &{RESP} =     create port     url=${NETWORK_SERVICE}
+  ...                           TEST_NETWORK_ID=${network}
+  ...                           TEST_PORT_NAME=${name}
+  set suite variable    ${port_id}  ${RESP.test_port_id}
+  Log   Created a port - ${port_id}     console=True
+  [Return]      ${port_id}
+
+Clean the ports
+  ${status}     ${val} =    Run Keyword And Ignore Error
+  ...                       File Should Exist   /tmp/port_id.txt
+  Run Keyword If    '${status}' == 'PASS'   Delete the ports
+
+Delete the ports
+  ${output} =   Get File    /tmp/port_id.txt
+
+  @{list} =     Split String     ${output}
+  Network service is available
+  FOR   ${id}    IN     @{list}
+    Wait Until Keyword Succeeds   1 hour     500ms
+    ...   clean port    url=${NETWORK_SERVICE}
+    ...                 TEST_PORT_ID=${id}
+    Log     deleted port ${id}       console=True
+  END

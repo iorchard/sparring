@@ -35,7 +35,7 @@ ${VOLUME_BACKEND_NAME}      rbd1
 
 
 #########################################
-# CDBOT variables                       #
+# cdbot variables                       #
 #########################################
 &{volume_svc}       url="http://cinder.openstack.svc.cluster.local:8080/"
 ...                 name=cinder-api  cname=cinder-api  retcode=300
@@ -52,6 +52,19 @@ ${SSH_HOST}         taco2-ctrl1
 ${SSH_PORT}         22
 ${SSH_USER}         user
 ${SSH_PASS}         pass
+
+#########################################
+# perfbot variables                     #
+#########################################
+${SERVER_NAME}          sparring-server
+${NUM_SERVERS}          5
+${VOL_TYPE}             rbd1
+${IMAGE_REF}            d57f2ead-621a-4807-83e9-3137f0a9f12b
+${VOL_SIZE}             10
+${FLAVOR_REF}           f86115a7-6f4d-44a5-9bfc-df269086d385
+@{PRIVATE_NETWORKS}     824752bc-6aa6-4de9-a559-13590e72f476
+${ZONE}                 nova
+@{HOSTS}                @{COMPUTE_HOSTS}
 
 #########################################
 # Do not touch below!!!                 #

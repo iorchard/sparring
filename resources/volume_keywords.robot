@@ -228,3 +228,23 @@ Create a volume to attach to the server
   Set Environment Variable   TEST_VOLUME_ID2  ${RESP.test_volume_id}
   Create File    ${TEMPDIR}/volume2.txt   ${RESP.test_volume_id}
 
+#
+# perfbot
+#
+User creates volume
+  [Arguments]   ${vol_name}=test-vol
+  &{RESP} =     create volume from image    url=${VOLUME_SERVICE}
+  ...                           TEST_PROJECT_ID=${PROJECT_ID}
+  ...                           TEST_IMAGE_ID=${IMAGE_REF}
+  ...                           TEST_VOLUME_NAME=${vol_name}
+  ...                           TEST_VOLUME_SIZE=${VOL_SIZE}
+  ...                           TEST_VOLUME_TYPE_ID=${VOL_TYPE}
+  set suite variable    ${volume_id}    ${RESP.test_volume_id}
+  Log   Created a volume - ${volume_id}     console=True
+  [Return]  ${volume_id}
+
+Volume is available
+  Wait Until Keyword Succeeds   5 min   200ms
+  ...   check volume is available       url=${VOLUME_SERVICE}
+  ...                                   TEST_PROJECT_ID=${PROJECT_ID}
+  ...                                   TEST_VOLUME_ID=${volume_id} 

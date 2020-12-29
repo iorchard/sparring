@@ -1,7 +1,13 @@
 *** Keywords ***
+#
+# common
+#
 Compute service is available
   connect to compute service  COMPUTE_SERVICE=${COMPUTE_SERVICE}
 
+#
+# funcbot
+#
 Clean the compute resources if test failed
   Run Keyword If Any Tests Failed   Reset forced_down flag for the service
   Run Keyword If Any Tests Failed   Clean compute resources
@@ -316,4 +322,92 @@ The server is evacuated
 
 Reset forced_down flag for the service
   reset forced_down flag for service    url=${COMPUTE_SERVICE}
+
+#
+# perfbot
+#
+Create servers
+  Set Suite Variable    @{server_id}    @{EMPTY}
+  @{ports} =      Create List   @{EMPTY}
+  Network service is available
+  Volume service is available
+  ${hostno} =    Get Length  ${HOSTS}
+  ${netno} =    Get Length  ${PRIVATE_NETWORKS}
+  FOR   ${i}    IN RANGE    0   ${NUM_SERVERS}
+    ${a} =      Evaluate    ${i}%${hostno}
+    ${b} =      Evaluate    ${i}%${netno}
+    ${no} =     Evaluate    f'{${i}:03}'
+    Log     Create ${SERVER_NAME}-port-${no}    console=True
+    ${port} =     User creates port     ${PRIVATE_NETWORKS}[${b}]
+    ...                                 ${SERVER_NAME}-port-${no}
+    Log     Create ${SERVER_NAME}-volume-${no}    console=True
+    ${vol} =     User creates volume    ${SERVER_NAME}-vol-${no}
+    Volume is available
+    Log     Create ${SERVER_NAME}-${no}     console=True
+    &{RESP}=  create server with port and volume    url=${COMPUTE_SERVICE}
+    ...                 TEST_SERVER_NAME=${SERVER_NAME}-${no}
+    ...                 TEST_FLAVOR_ID=${FLAVOR_REF}
+    ...                 TEST_PORT_ID=${port}
+    ...                 TEST_VOLUME_ID=${vol}
+    ...                 ZONE=${ZONE}
+    ...                 HOST=${HOSTS}[${a}]
+    Append To List      ${server_id}    ${RESP.test_server_id}
+    Append To List      ${ports}      ${port}
+  END
+  ${rc} =   Run And Return Rc
+  ...   echo ${server_id} |tr -d '[' |tr -d ']' | tr -d ' ' |tr ',' ' ' |tee /tmp/server_id.txt
+  Should Be Equal As Integers   ${rc}   0
+  ${rc} =   Run And Return Rc
+  ...   echo ${ports} |tr -d '[' |tr -d ']' | tr -d ' ' |tr ',' ' ' |tee /tmp/port_id.txt
+  Should Be Equal As Integers   ${rc}   0
+
+All servers are active
+  Log   \nVerify all servers are active.   console=True
+  Wait Until Keyword Succeeds   1 hour      1s
+  ...   verify all servers are active   url=${COMPUTE_SERVICE}
+  ...                                   SERVER_NAME=${SERVER_NAME}
+  ...                                   NUM_SERVERS=${NUM_SERVERS}
+
+Stop servers
+  ${output} =   Get File    /tmp/server_id.txt
+
+  @{list} =     Split String     ${output}
+  FOR   ${id}    IN     @{list}
+    Log     stop server ${id}       console=True
+    stop server     url=${COMPUTE_SERVICE}
+    ...             TEST_SERVER_ID=${id}
+  END
+
+All servers are stopped
+  Log   \nVerify all servers are stopped.   console=True
+  Wait Until Keyword Succeeds   1 hour      1s
+  ...   verify all servers are stopped  url=${COMPUTE_SERVICE}
+  ...                                   SERVER_NAME=${SERVER_NAME}
+  ...                                   NUM_SERVERS=${NUM_SERVERS}
+
+Start servers
+  ${output} =   Get File    /tmp/server_id.txt
+
+  @{list} =     Split String     ${output}
+  FOR   ${id}    IN     @{list}
+    Log     start server ${id}       console=True
+    start server    url=${COMPUTE_SERVICE}
+    ...             TEST_SERVER_ID=${id}
+  END
+
+Delete servers
+  ${output} =   Get File    /tmp/server_id.txt
+
+  @{list} =     Split String     ${output}
+  FOR   ${id}   IN  @{list}
+    Log     delete server ${id}       console=True
+    clean server    url=${COMPUTE_SERVICE}
+    ...             TEST_SERVER_ID=${id}
+  END
+
+All servers are gone
+  Log   \nVerify all servers are gone.   console=True
+  Wait Until Keyword Succeeds   1 hour      1s
+  ...   verify all servers are gone     url=${COMPUTE_SERVICE}
+  ...                                   SERVER_NAME=${SERVER_NAME}
 

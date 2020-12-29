@@ -430,3 +430,22 @@ tests:
 - name: clean server
   DELETE: /servers/$ENVIRON['TEST_SERVER_ID']
   status: 204 || 404
+
+#
+# perfbot
+#
+- name: verify all servers are active
+  GET: /servers?status=ACTIVE&name=$ENVIRON['SERVER_NAME']
+  response_json_paths:
+      $.servers.`len`: $ENVIRON['NUM_SERVERS']
+
+- name: verify all servers are stopped
+  GET: /servers?status=SHUTOFF&name=$ENVIRON['SERVER_NAME']
+  response_json_paths:
+      $.servers.`len`: $ENVIRON['NUM_SERVERS']
+
+- name: verify all servers are gone
+  GET: /servers?name=$ENVIRON['SERVER_NAME']
+  response_json_paths:
+      $.servers.`len`: 0
+
