@@ -190,11 +190,11 @@ User creates port
 
 Clean the ports
   ${status}     ${val} =    Run Keyword And Ignore Error
-  ...                       File Should Exist   /tmp/port_id.txt
+  ...                       File Should Exist   ${PORT_FILE}
   Run Keyword If    '${status}' == 'PASS'   Delete the ports
 
 Delete the ports
-  ${output} =   Get File    /tmp/port_id.txt
+  ${output} =   Get File    ${PORT_FILE}
 
   @{list} =     Split String     ${output}
   Network service is available

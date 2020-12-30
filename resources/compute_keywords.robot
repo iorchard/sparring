@@ -355,10 +355,10 @@ Create servers
     Append To List      ${ports}      ${port}
   END
   ${rc} =   Run And Return Rc
-  ...   echo ${server_id} |tr -d '[' |tr -d ']' | tr -d ' ' |tr ',' ' ' |tee /tmp/server_id.txt
+  ...   echo ${server_id} |tr -d '[' |tr -d ']' | tr -d ' ' |tr ',' ' ' |tee ${SERVER_FILE}
   Should Be Equal As Integers   ${rc}   0
   ${rc} =   Run And Return Rc
-  ...   echo ${ports} |tr -d '[' |tr -d ']' | tr -d ' ' |tr ',' ' ' |tee /tmp/port_id.txt
+  ...   echo ${ports} |tr -d '[' |tr -d ']' | tr -d ' ' |tr ',' ' ' |tee ${PORT_FILE}
   Should Be Equal As Integers   ${rc}   0
 
 All servers are active
@@ -369,7 +369,7 @@ All servers are active
   ...                                   NUM_SERVERS=${NUM_SERVERS}
 
 Stop servers
-  ${output} =   Get File    /tmp/server_id.txt
+  ${output} =   Get File    ${SERVER_FILE}
 
   @{list} =     Split String     ${output}
   FOR   ${id}    IN     @{list}
@@ -386,7 +386,7 @@ All servers are stopped
   ...                                   NUM_SERVERS=${NUM_SERVERS}
 
 Start servers
-  ${output} =   Get File    /tmp/server_id.txt
+  ${output} =   Get File    ${SERVER_FILE}
 
   @{list} =     Split String     ${output}
   FOR   ${id}    IN     @{list}
@@ -396,7 +396,7 @@ Start servers
   END
 
 Delete servers
-  ${output} =   Get File    /tmp/server_id.txt
+  ${output} =   Get File    ${SERVER_FILE}
 
   @{list} =     Split String     ${output}
   FOR   ${id}   IN  @{list}

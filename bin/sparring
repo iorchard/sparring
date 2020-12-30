@@ -4,7 +4,14 @@ FUNCBOTS=(identity network image volume compute)
 FUNCBOT_DIR=$(dirname $(realpath $0))/../funcbot
 CDBOTS=(identity network image volume compute)
 CDBOT_DIR=$(dirname $(realpath $0))/../cdbot
+PERFBOTS=(create stop start delete)
+PERFBOT_DIR=$(dirname $(realpath $0))/../perfbot
 
+list_perfbot () {
+    for b in ${PERFBOTS[@]}; do
+        echo $b
+    done
+}
 list_cdbot () {
     for b in ${CDBOTS[@]}; do
         echo $b
@@ -15,10 +22,32 @@ list_funcbot () {
         echo $b
     done
 }
+run_perfbot () {
+    # check the args
+    declare -a suites
+    [[ $# -ne 0 ]] && suites=($@) || suites=(${PERFBOTS[@]})
+    echo ${suites[@]}
+    for i in ${suites[@]}; do
+        if [[ ! " ${PERFBOTS[@]} " =~ " $i " ]]; then
+            echo "Abort: $i is not a test suite."
+            list_perfbot
+            exit 1
+        fi
+    done
+    # Okay. Let's go.
+    cd $PERFBOT_DIR
+    robot   \
+            --exitonerror \
+            --critical critical \
+            --console verbose \
+            --consolecolors auto \
+            --outputdir /tmp/output \
+            "${suites[@]}"
+}
 run_cdbot () {
     # check the args
     declare -a suites
-    [[ $# -ne 0 ]] && suites=($@) || suites=(${FUNCBOTS[@]})
+    [[ $# -ne 0 ]] && suites=($@) || suites=(${CDBOTS[@]})
     echo ${suites[@]}
     for i in ${suites[@]}; do
         if [[ ! " ${CDBOTS[@]} " =~ " $i " ]]; then

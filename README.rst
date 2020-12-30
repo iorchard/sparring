@@ -106,7 +106,7 @@ To run all test suites in funcbot::
       --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
-      -v /tmp/output:/sparring/funcbot/output \
+      -v /tmp/output:/tmp/output \
       jijisa/sparring
 
 To run only identity and network test suites in funcbot::
@@ -114,7 +114,7 @@ To run only identity and network test suites in funcbot::
    $ docker run --rm --tty --network=host --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
-      -v /tmp/output:/sparring/funcbot/output \
+      -v /tmp/output:/tmp/output \
       jijisa/sparring --run-funcbot identity network
 
 The result files (output.xml, log.html, report.html) will be in 

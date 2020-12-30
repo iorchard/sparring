@@ -65,6 +65,8 @@ ${FLAVOR_REF}           f86115a7-6f4d-44a5-9bfc-df269086d385
 @{PRIVATE_NETWORKS}     824752bc-6aa6-4de9-a559-13590e72f476
 ${ZONE}                 nova
 @{HOSTS}                @{COMPUTE_HOSTS}
+${SERVER_FILE}          ${OUTPUT DIR}/server_id.txt
+${PORT_FILE}            ${OUTPUT DIR}/port_id.txt
 
 #########################################
 # Do not touch below!!!                 #
