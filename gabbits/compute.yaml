@@ -360,7 +360,7 @@ tests:
   data:
     os-migrateLive:
       host: $ENVIRON['TARGET_HOST']
-      block_migration: false
+      block_migration: auto
   status: 202
 
 - name: check server is migrating

@@ -206,7 +206,7 @@ Upload the volume to image service
   Create File    ${TEMPDIR}/image_from_vol.txt   ${RESP.test_image_id_from_vol}
 
 Check if the image from vol is active
-  Wait Until Keyword Succeeds   30s   3s
+  Wait Until Keyword Succeeds   1m   3s
   ...   check image is active       url=${IMAGE_SERVICE}
   ...                               TEST_IMAGE_ID=%{TEST_IMAGE_ID_FROM_VOL}
 
