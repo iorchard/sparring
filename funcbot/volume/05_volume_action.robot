@@ -18,7 +18,7 @@ Upload the volume to image service
   and Check if the image from vol is active
   Then Show the image from vol info
 
-#Revert the volume to snapshot
-#  [Tags]    volume  critical
-#  Given Volume service is available
-#  When Revert the volume to snapshot
+Revert the volume to snapshot
+  [Tags]    volume  critical
+  Given Volume service is available
+  When Revert the volume to snapshot

@@ -2,6 +2,7 @@ defaults:
   verbose: True
   request_headers:
     x-auth-token: $ENVIRON['SERVICE_TOKEN']
+    OpenStack-API-Version: volume 3.59
 
 tests:
 - name: connect to volume service
