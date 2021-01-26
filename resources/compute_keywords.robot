@@ -292,7 +292,8 @@ Check if the server is migrating in detail
 
 Check if the server is migrated
   &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
-  #Log   ${RESP.test_server_host}:%{TEST_SERVER_HOST}   console=True
+  Log   Before: %{TEST_SERVER_HOST} After: ${RESP.test_server_host}
+  ...   console=True
   Should Not Be Equal  ${RESP.test_server_host}   %{TEST_SERVER_HOST}
   Set Environment Variable  TEST_SERVER_HOST  ${RESP.test_server_host}
 

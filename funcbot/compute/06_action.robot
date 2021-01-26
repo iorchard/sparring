@@ -68,26 +68,31 @@ Rebuild the server
   When Rebuild the server
   Then Check if the server is active
 
-#Stop the server
-#  [Tags]    compute     critical
-#  Given Compute service is available
-#  When Stop the server
-#  Then Check if the server is stopped
-#
-#Migrate the server
-#  [Tags]    compute     critical
-#  Given Compute service is available
-#  and Check where the server is in
-#  When Migrate the server
-#  Then Check if the server is in verify resize
-#  and Confirm a resize action for the server
-#
-#Start the server
-#  [Tags]    compute     critical
-#  Given Compute service is available
-#  When Start the server
-#  Then Check if the server is active
-#  and Check if the server is migrated
+Stop the server for cold migration
+  [Tags]    compute     critical
+  Given Compute service is available
+  When Stop the server
+  Then Check if the server is stopped
+
+Cold-migrate the server
+  [Tags]    compute     critical
+  Given Compute service is available
+  and Check where the server is in
+  When Migrate the server
+  Then Check if the server is in verify resize
+  and Confirm a resize action for the server
+
+Check if the server is cold-migrated 
+  [Tags]    compute     critical
+  Given Compute service is available
+  When Check if the server is stopped
+  Then Check if the server is migrated
+
+Start the server after cold migration
+  [Tags]    compute     critical
+  Given Compute service is available
+  When Start the server
+  Then Check if the server is active
 
 Live-Migrate the server
   [Tags]    compute     critical
@@ -113,7 +118,7 @@ Live-Migrate the server again
   and Check where the server is in
   When Live-Migrate the server
 
-Check if the server is migrating in detail
+Check if the server is migrated
   [Tags]    compute     critical
   Given Compute service is available
   When Check if the server is migrating in detail
