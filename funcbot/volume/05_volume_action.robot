@@ -22,3 +22,4 @@ Revert the volume to snapshot
   [Tags]    volume  critical
   Given Volume service is available
   When Revert the volume to snapshot
+  Then Check if the snapshot is available
