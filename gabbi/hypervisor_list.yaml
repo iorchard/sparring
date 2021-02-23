@@ -1,0 +1,11 @@
+defaults:
+  verbose: True
+  request_headers:
+    x-auth-token: gAAAAABgE7r2FdZG3xd56QeMDLusXFaQ2hI5tppY0pm__ibO2b0rRxx50RwP0XbJZtMt57bocm7DCCECeL-61AHqMKGe95ZBn-liuYPw_bFB01NBCg7DQ2VLfwDgvz4p_IGDwDVNgCywERxw9aiiOeqPZRR2t7tC3W2Ig66lsULDSwEvAyH8HoE
+    OpenStack-API-Version: compute 2.53
+
+tests:
+- name: list hypervisor
+  GET: http://nova.openstack.svc.cluster.local:8080/v2.1/os-hypervisors
+  status: 200
+

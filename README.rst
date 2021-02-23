@@ -91,6 +91,22 @@ There are three robots in Sparring.
 
 Use docker command to run them.
 
+Show the help message.::
+
+   $ docker run --rm --name sparring jijisa/sparring -h
+   USAGE: /home/jijisa/sparring/bin/sparring {-h|-c|-d|-D|-s|-r|-l|-R|-L}
+   
+    -h --help                            Display this help message.
+    -c --cleanup                         Clean up test resources.
+    -d --run-cdbot [TEST_SUITE}...       Run Continuous Delivery test.
+    -D --list-cdbot                      List cdbot test suites.
+    -s --show-os-settings                Show openstack settings.
+    -r --run-funcbot [TEST_SUITE]...     Run funcbot.
+    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot excluding evacuation test.
+    -l --list-funcbot                    List funcbot test suites.
+    -R --run-perfbot [TEST_SUITE]...     Run perfbot.
+    -L --list-perfbot                    List perfbot test suites.
+
 List test suites in funcbot::
 
    $ docker run --rm --name sparring jijisa/sparring --list-funcbot
@@ -108,6 +124,15 @@ To run all test suites in funcbot::
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/tmp/output \
       jijisa/sparring
+
+To run all test suites except evacuation test in funcbot::
+
+   $ docker run --rm --tty --network=host \
+      --name sparring \
+      -v /etc/hosts:/etc/hosts:ro \
+      -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
+      -v /tmp/output:/tmp/output \
+      jijisa/sparring --run-funcbot -e
 
 To run only identity and network test suites in funcbot::
 
@@ -217,6 +242,22 @@ There are three robots in Sparring.
 
 Use sparring command to run them.
 
+Show the help message.::
+
+   $ sparring -h
+   USAGE: /home/jijisa/sparring/bin/sparring {-h|-c|-d|-D|-s|-r|-l|-R|-L}
+   
+    -h --help                            Display this help message.
+    -c --cleanup                         Clean up test resources.
+    -d --run-cdbot [TEST_SUITE}...       Run Continuous Delivery test.
+    -D --list-cdbot                      List cdbot test suites.
+    -s --show-os-settings                Show openstack settings.
+    -r --run-funcbot [TEST_SUITE]...     Run funcbot.
+    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot excluding evacuation test.
+    -l --list-funcbot                    List funcbot test suites.
+    -R --run-perfbot [TEST_SUITE]...     Run perfbot.
+    -L --list-perfbot                    List perfbot test suites.
+
 List test suites in funcbot::
 
    $ sparring --list-funcbot
@@ -229,6 +270,10 @@ List test suites in funcbot::
 To run all test suites in funcbot::
 
    $ sparring --run-funcbot 
+
+To run all test suites except evacuation test in funcbot::
+
+   $ sparring --run-funcbot -e
 
 To run only identity and network test suites in funcbot::
 

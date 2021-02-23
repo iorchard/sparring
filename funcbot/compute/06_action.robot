@@ -126,7 +126,7 @@ Check if the server is migrated
   and Check if the server is migrated
 
 Evacuate the server
-  [Tags]    compute     critical
+  [Tags]    compute     critical    evacuate
   Given Compute service is available
   and Stop the server
   and Check if the server is stopped

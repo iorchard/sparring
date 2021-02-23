@@ -67,10 +67,14 @@ run_cdbot () {
             "${suites[@]}"
 }
 run_funcbot () {
-    # check the args
     declare -a suites
+    declare exclude_tags
+    # check the args
+    if [[ $1 == '-e' ]]; then
+        exclude_tags="--exclude evacuate"
+        shift
+    fi
     [[ $# -ne 0 ]] && suites=($@) || suites=(${FUNCBOTS[@]})
-    echo ${suites[@]}
     for i in ${suites[@]}; do
         if [[ ! " ${FUNCBOTS[@]} " =~ " $i " ]]; then
             echo "Abort: $i is not a test suite."
@@ -82,7 +86,7 @@ run_funcbot () {
     cd $FUNCBOT_DIR
     robot   \
             --exitonerror \
-            --critical critical \
+            --critical critical $exclude_tags \
             --console verbose \
             --consolecolors auto \
             --outputdir /tmp/output \
@@ -111,13 +115,14 @@ USAGE () {
     echo " -D --list-cdbot                      List cdbot test suites."
     echo " -s --show-os-settings                Show openstack settings."
     echo " -r --run-funcbot [TEST_SUITE]...     Run funcbot."
+    echo " -r --run-funcbot -e [TEST_SUITE]...  Run funcbot excluding evacuation test."
     echo " -l --list-funcbot                    List funcbot test suites."
     echo " -R --run-perfbot [TEST_SUITE]...     Run perfbot."
     echo " -L --list-perfbot                    List perfbot test suites."
 }
 if [ $# -lt 1 ]; then
     USAGE
-    exit 0
+    exit 1
 fi
 
 OPT=$1
@@ -128,7 +133,7 @@ do
     case "$OPT" in
         -h | --help)
             USAGE
-            break
+            exit 0
             ;;
         -c | --cleanup)
             cleanup 
@@ -166,7 +171,7 @@ do
             echo Error: unknown option: "$OPT" 1>&2
             echo " "
             USAGE
-            break
+            exit 1
             ;;
     esac
 done

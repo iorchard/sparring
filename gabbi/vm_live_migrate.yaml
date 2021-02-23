@@ -1,0 +1,17 @@
+defaults:
+  verbose: True
+  request_headers:
+    x-auth-token: gAAAAABgGQGjAbqLvFAJImkKqvpJ1jqW_kTupFTmwd_3xOWX2lBEIsWjQk9BURY5l_sbRuce50USjdPVT9EdX7DAoZgUbgIInITKyj69MfZf7rzmbD3pSwU1QxCi8Dg_d4309q4ih3GDCyoe2hTpypWS73k9W-ySRp98i2kZ5u9fgjHpDhvChGM
+    OpenStack-API-Version: compute 2.79
+
+tests:
+- name: live-migrate server
+  POST: http://nova.openstack.svc.cluster.local:8080/v2.1/servers/dc8288ce-d17c-4bc9-af5c-4df6a398363d/action
+  request_headers:
+    content-type: application/json
+  data:
+    os-migrateLive:
+      host: null
+      block_migration: true
+  status: 202
+

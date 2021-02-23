@@ -317,7 +317,7 @@ Check if the server is evacuated
 
 The server is evacuated
   &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
-  Log   ${RESP.test_server_host}:%{TEST_SERVER_HOST}   console=True
+  Log   to: ${RESP.test_server_host} from: %{TEST_SERVER_HOST}   console=True
   Should Not Be Equal  ${RESP.test_server_host}   %{TEST_SERVER_HOST}
   Set Environment Variable  TEST_SERVER_HOST  ${RESP.test_server_host}
 

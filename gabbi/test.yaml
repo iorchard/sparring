@@ -1,0 +1,9 @@
+tests:
+- name: get a token
+  method: POST
+  url: "http://keystone.openstack.svc.cluster.local:8080/v3/auth/tokens"
+  request_headers:
+      Content-Type: application/json
+  data: <@auth_data.json
+  status: 201
+
