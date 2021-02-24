@@ -36,6 +36,7 @@ run_perfbot () {
     done
     # Okay. Let's go.
     cd $PERFBOT_DIR
+    SECONDS=0
     robot   \
             --exitonerror \
             --critical critical \
@@ -43,6 +44,9 @@ run_perfbot () {
             --consolecolors auto \
             --outputdir /tmp/output \
             "${suites[@]}"
+    # Elapsed time
+    s=$SECONDS
+    echo "Elapsed time: $(($s / 60)) minutes and $(($s % 60)) seconds."
 }
 run_cdbot () {
     # check the args
@@ -58,6 +62,7 @@ run_cdbot () {
     done
     # Okay. Let's go.
     cd $CDBOT_DIR
+    SECONDS=0
     robot   \
             --exitonerror \
             --critical critical \
@@ -65,6 +70,9 @@ run_cdbot () {
             --consolecolors auto \
             --outputdir /tmp/output \
             "${suites[@]}"
+    # Elapsed time
+    s=$SECONDS
+    echo "Elapsed time: $(($s / 60)) minutes and $(($s % 60)) seconds."
 }
 run_funcbot () {
     declare -a suites
@@ -84,6 +92,7 @@ run_funcbot () {
     done
     # Okay. Let's go.
     cd $FUNCBOT_DIR
+    SECONDS=0
     robot   \
             --exitonerror \
             --critical critical $exclude_tags \
@@ -91,6 +100,9 @@ run_funcbot () {
             --consolecolors auto \
             --outputdir /tmp/output \
             "${suites[@]}"
+    # Elapsed time
+    s=$SECONDS
+    echo "Elapsed time: $(($s / 60)) minutes and $(($s % 60)) seconds."
 }
 cleanup () {
     cd $FUNCBOT_DIR
