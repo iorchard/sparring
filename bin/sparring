@@ -38,6 +38,7 @@ run_perfbot () {
     cd $PERFBOT_DIR
     SECONDS=0
     robot   \
+            --exitonfailure \
             --exitonerror \
             --critical critical \
             --console verbose \
@@ -64,6 +65,7 @@ run_cdbot () {
     cd $CDBOT_DIR
     SECONDS=0
     robot   \
+            --exitonfailure \
             --exitonerror \
             --critical critical \
             --console verbose \
@@ -94,6 +96,7 @@ run_funcbot () {
     cd $FUNCBOT_DIR
     SECONDS=0
     robot   \
+            --exitonfailure \
             --exitonerror \
             --critical critical $exclude_tags \
             --console verbose \
