@@ -86,8 +86,7 @@ There are three robots in Sparring.
 
 * funcbot: functional/scenario testing robot
 * cdbot: continuous delivery testing robot
-* perfbot: performance testing robot (Not yet included! It will be included
-  in the future.)
+* perfbot: performance testing robot
 
 Use docker command to run them.
 
@@ -238,7 +237,7 @@ There are three robots in Sparring.
 
 * funcbot: functional/scenario testing robot
 * cdbot: continuous delivery testing robot
-* perfbot: performance testing robot (Not yet included!)
+* perfbot: performance testing robot
 
 Use sparring command to run them.
 

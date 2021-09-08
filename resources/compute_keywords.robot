@@ -176,7 +176,8 @@ Show the server info
   ...                   TEST_SERVER_NAME=${TEST_SERVER_NAME}
 
 Check if the server has the floating ip
-  check server has floating ip      url=${COMPUTE_SERVICE}
+  Wait Until Keyword Succeeds   30s   3s
+  ...   check server has floating ip      url=${COMPUTE_SERVICE}
   ...                   TEST_NETWORK_NAME=${TEST_NETWORK_NAME}
 
 Create an image from the server
@@ -235,7 +236,7 @@ Resize the server to the new flavor
   resize server to new flavor   url=${COMPUTE_SERVICE}
 
 Check if the server is in verify resize
-  Wait Until Keyword Succeeds   1m   3s
+  Wait Until Keyword Succeeds   2m   3s
   ...   check server is in verify resize     url=${COMPUTE_SERVICE}
 
 Confirm a resize action for the server
@@ -292,7 +293,7 @@ Check if the server is migrating in detail
 
 Check if the server is migrated
   &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
-  Log   Before: %{TEST_SERVER_HOST} After: ${RESP.test_server_host}
+  Log   \nBefore: %{TEST_SERVER_HOST} After: ${RESP.test_server_host}
   ...   console=True
   Should Not Be Equal  ${RESP.test_server_host}   %{TEST_SERVER_HOST}
   Set Environment Variable  TEST_SERVER_HOST  ${RESP.test_server_host}
@@ -317,7 +318,7 @@ Check if the server is evacuated
 
 The server is evacuated
   &{RESP} =     check where server is in    url=${COMPUTE_SERVICE}
-  Log   to: ${RESP.test_server_host} from: %{TEST_SERVER_HOST}   console=True
+  Log   \nwas: %{TEST_SERVER_HOST} is: ${RESP.test_server_host}  console=True
   Should Not Be Equal  ${RESP.test_server_host}   %{TEST_SERVER_HOST}
   Set Environment Variable  TEST_SERVER_HOST  ${RESP.test_server_host}
 
