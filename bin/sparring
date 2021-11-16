@@ -67,9 +67,8 @@ run_cdbot () {
     robot   \
             --exitonfailure \
             --exitonerror \
-            --critical critical \
             --console verbose \
-            --consolecolors auto \
+            --consolecolors off \
             --outputdir /tmp/output \
             "${suites[@]}"
     # Elapsed time
@@ -97,10 +96,9 @@ run_funcbot () {
     SECONDS=0
     robot   \
             --exitonfailure \
-            --exitonerror \
-            --critical critical $exclude_tags \
+            --exitonerror $exclude_tags \
             --console verbose \
-            --consolecolors auto \
+            --consolecolors off \
             --outputdir /tmp/output \
             "${suites[@]}"
     # Elapsed time
@@ -111,9 +109,8 @@ cleanup () {
     cd $FUNCBOT_DIR
     robot   --exitonfailure \
             --exitonerror \
-            --critical critical \
             --console verbose \
-            --consolecolors auto \
+            --consolecolors off \
             --outputdir /tmp/output \
             cleanup.robot
 }
