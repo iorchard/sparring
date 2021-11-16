@@ -86,7 +86,8 @@ There are three robots in Sparring.
 
 * funcbot: functional/scenario testing robot
 * cdbot: continuous delivery testing robot
-* perfbot: performance testing robot
+* perfbot: performance testing robot (Not yet included! It will be included
+  in the future.)
 
 Use docker command to run them.
 
@@ -117,33 +118,34 @@ List test suites in funcbot::
 
 To run all test suites in funcbot::
 
-   $ docker run --rm --tty --network=host \
+   $ docker run --rm --network=host \
       --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/tmp/output \
-      jijisa/sparring
+      jijisa/sparring | tee sparring.log
 
 To run all test suites except evacuation test in funcbot::
 
-   $ docker run --rm --tty --network=host \
+   $ docker run --rm --network=host \
       --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/tmp/output \
-      jijisa/sparring --run-funcbot -e
+      jijisa/sparring --run-funcbot -e | tee sparring.log
 
 To run only identity and network test suites in funcbot::
 
-   $ docker run --rm --tty --network=host --name sparring \
+   $ docker run --rm --network=host --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/tmp/output \
-      jijisa/sparring --run-funcbot identity network
+      jijisa/sparring --run-funcbot identity network | tee sparring.log
 
 The result files (output.xml, log.html, report.html) will be in 
 /tmp/output/ directory.
 
+The console log file sparring.log will be in the current directory.
 
 Install and Run on bare metal
 -------------------------------
@@ -237,7 +239,7 @@ There are three robots in Sparring.
 
 * funcbot: functional/scenario testing robot
 * cdbot: continuous delivery testing robot
-* perfbot: performance testing robot
+* perfbot: performance testing robot (Not yet included!)
 
 Use sparring command to run them.
 
@@ -268,13 +270,13 @@ List test suites in funcbot::
 
 To run all test suites in funcbot::
 
-   $ sparring --run-funcbot 
+   $ sparring --run-funcbot | tee sparring.log
 
 To run all test suites except evacuation test in funcbot::
 
-   $ sparring --run-funcbot -e
+   $ sparring --run-funcbot -e | tee sparring.log
 
 To run only identity and network test suites in funcbot::
 
-   $ sparring --run-funcbot identity network
+   $ sparring --run-funcbot identity network | tee sparring.log
 
