@@ -7,6 +7,10 @@ CDBOT_DIR=$(dirname $(realpath $0))/../cdbot
 PERFBOTS=(create stop start delete)
 PERFBOT_DIR=$(dirname $(realpath $0))/../perfbot
 
+version () {
+    cat /etc/os-release
+    robot --version
+}
 list_perfbot () {
     for b in ${PERFBOTS[@]}; do
         echo $b
@@ -119,7 +123,7 @@ show_openstack_settings () {
     cat "$RESOURCES_DIR/openstack_settings.robot"
 }
 USAGE () {
-    echo "USAGE: $0 {-h|-c|-d|-D|-s|-r|-l|-R|-L}" 1>&2
+    echo "USAGE: $0 {-h|-c|-d|-D|-s|-r|-l|-R|-L|-v}" 1>&2
     echo ""
     echo " -h --help                            Display this help message."
     echo " -c --cleanup                         Clean up test resources."
@@ -131,6 +135,7 @@ USAGE () {
     echo " -l --list-funcbot                    List funcbot test suites."
     echo " -R --run-perfbot [TEST_SUITE]...     Run perfbot."
     echo " -L --list-perfbot                    List perfbot test suites."
+    echo " -v --version                         List version info."
 }
 if [ $# -lt 1 ]; then
     USAGE
@@ -177,6 +182,10 @@ do
             ;;
         -L | --list-perfbot)
             list_perfbot
+            break
+            ;;
+        -v | --version)
+            version
             break
             ;;
         *)

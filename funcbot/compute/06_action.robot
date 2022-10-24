@@ -1,4 +1,6 @@
 *** Settings ***
+Test Setup      Take a rest
+Test Teardown   Take a rest
 Suite Setup     User gets auth token
 Suite Teardown  Clean the compute resources if test failed
 
@@ -125,12 +127,12 @@ Check if the server is migrated
   Then Check if the server is active 
   and Check if the server is migrated
 
-Evacuate the server
-  [Tags]    compute     critical    evacuate
-  Given Compute service is available
-  and Stop the server
-  and Check if the server is stopped
-  and Set forced_down flag for the service
-  When Evacuate the server
-  Then Check if the server is evacuated
-  and Reset forced_down flag for the service
+#Evacuate the server
+#  [Tags]    compute     critical    evacuate
+#  Given Compute service is available
+#  and Stop the server
+#  and Check if the server is stopped
+#  and Set forced_down flag for the service
+#  When Evacuate the server
+#  Then Check if the server is evacuated
+#  and Reset forced_down flag for the service

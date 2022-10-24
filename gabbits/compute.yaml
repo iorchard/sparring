@@ -350,7 +350,7 @@ tests:
     content-type: application/json
   data:
     migrate:
-      host: $ENVIRON['TARGET_HOST']
+      host: null
   status: 202
 
 - name: live-migrate server
@@ -359,7 +359,7 @@ tests:
     content-type: application/json
   data:
     os-migrateLive:
-      host: $ENVIRON['TARGET_HOST']
+      host: null
       block_migration: auto
   status: 202
 
@@ -402,8 +402,7 @@ tests:
   request_headers:
     content-type: application/json
   data:
-    evacuate:
-      host: $ENVIRON['TARGET_HOST']
+    evacuate: null
   status: 200
 
 - name: reset forced_down flag for service

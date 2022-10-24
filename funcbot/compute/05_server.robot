@@ -1,4 +1,6 @@
 *** Settings ***
+Test Setup      Take a rest
+Test Teardown   Take a rest
 Suite Setup     User gets auth token
 Suite Teardown  Clean the compute resources if test failed
 

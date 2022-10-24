@@ -8,6 +8,9 @@ Compute service is available
 #
 # funcbot
 #
+Take a rest
+  Sleep     1s
+
 Clean the compute resources if test failed
   Run Keyword If Any Tests Failed   Reset forced_down flag for the service
   Run Keyword If Any Tests Failed   Clean compute resources
