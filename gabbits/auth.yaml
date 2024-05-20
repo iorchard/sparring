@@ -1,3 +1,5 @@
+defaults:
+  cert_validate: False
 tests:
 # domain scoped token
 - name: get auth test project scoped token

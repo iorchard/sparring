@@ -36,11 +36,11 @@ Edit settings above "Do not touch below!!!" line.::
    #
    # Service Endpoints
    #
-   ${IDENTITY_SERVICE}     http://keystone.openstack.svc.cluster.local:8080/v3
-   ${NETWORK_SERVICE}      http://neutron.openstack.svc.cluster.local:8080/v2.0
-   ${IMAGE_SERVICE}        http://glance.openstack.svc.cluster.local:8080/v2
-   ${VOLUME_SERVICE}       http://cinder.openstack.svc.cluster.local:8080/v3
-   ${COMPUTE_SERVICE}      http://nova.openstack.svc.cluster.local:8080/v2.1
+   ${IDENTITY_SERVICE}     https://keystone.openstack.svc.cluster.local:8443/v3
+   ${NETWORK_SERVICE}      https://neutron.openstack.svc.cluster.local:8443/v2.0
+   ${IMAGE_SERVICE}        https://glance.openstack.svc.cluster.local:8443/v2
+   ${VOLUME_SERVICE}       https://cinder.openstack.svc.cluster.local:8443/v3
+   ${COMPUTE_SERVICE}      https://nova.openstack.svc.cluster.local:8443/v2.1
    
    #
    # adminrc
@@ -64,7 +64,7 @@ Edit settings above "Do not touch below!!!" line.::
    
    # compute test
    # Define compute host list
-   @{COMPUTE_HOSTS}            taco2-comp1     taco2-comp2
+   @{COMPUTE_HOSTS}            compute1     compute2
 
 
    ##########################################
@@ -102,7 +102,7 @@ Show the help message.::
     -D --list-cdbot                      List cdbot test suites.
     -s --show-os-settings                Show openstack settings.
     -r --run-funcbot [TEST_SUITE]...     Run funcbot.
-    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot excluding evacuation test.
+    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot including evacuation test.
     -l --list-funcbot                    List funcbot test suites.
     -R --run-perfbot [TEST_SUITE]...     Run perfbot.
     -L --list-perfbot                    List perfbot test suites.
@@ -125,7 +125,7 @@ To run all test suites in funcbot::
       -v /tmp/output:/tmp/output \
       jijisa/sparring | tee sparring.log
 
-To run all test suites except evacuation test in funcbot::
+To run all test suites including evacuation test in funcbot::
 
    $ docker run --rm --network=host \
       --name sparring \
@@ -189,11 +189,11 @@ above "Do not touch below!!!" line.::
    #
    # Service Endpoints
    #
-   ${IDENTITY_SERVICE}     http://keystone.openstack.svc.cluster.local:8080/v3
-   ${NETWORK_SERVICE}      http://neutron.openstack.svc.cluster.local:8080/v2.0
-   ${IMAGE_SERVICE}        http://glance.openstack.svc.cluster.local:8080/v2
-   ${VOLUME_SERVICE}       http://cinder.openstack.svc.cluster.local:8080/v3
-   ${COMPUTE_SERVICE}      http://nova.openstack.svc.cluster.local:8080/v2.1
+   ${IDENTITY_SERVICE}     https://keystone.openstack.svc.cluster.local:8443/v3
+   ${NETWORK_SERVICE}      https://neutron.openstack.svc.cluster.local:8443/v2.0
+   ${IMAGE_SERVICE}        https://glance.openstack.svc.cluster.local:8443/v2
+   ${VOLUME_SERVICE}       https://cinder.openstack.svc.cluster.local:8443/v3
+   ${COMPUTE_SERVICE}      https://nova.openstack.svc.cluster.local:8443/v2.1
    
    #
    # adminrc
@@ -217,7 +217,7 @@ above "Do not touch below!!!" line.::
    
    # compute test
    # Define compute host list
-   @{COMPUTE_HOSTS}            taco2-comp1     taco2-comp2
+   @{COMPUTE_HOSTS}            compute1     compute2
 
 
    ##########################################
@@ -254,7 +254,7 @@ Show the help message.::
     -D --list-cdbot                      List cdbot test suites.
     -s --show-os-settings                Show openstack settings.
     -r --run-funcbot [TEST_SUITE]...     Run funcbot.
-    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot excluding evacuation test.
+    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot including evacuation test.
     -l --list-funcbot                    List funcbot test suites.
     -R --run-perfbot [TEST_SUITE]...     Run perfbot.
     -L --list-perfbot                    List perfbot test suites.
@@ -272,7 +272,7 @@ To run all test suites in funcbot::
 
    $ sparring --run-funcbot | tee sparring.log
 
-To run all test suites except evacuation test in funcbot::
+To run all test suites including evacuation test in funcbot::
 
    $ sparring --run-funcbot -e | tee sparring.log
 

@@ -83,10 +83,7 @@ run_funcbot () {
     declare -a suites
     declare exclude_tags
     # check the args
-    if [[ $1 == '-e' ]]; then
-        exclude_tags="--exclude evacuate"
-        shift
-    fi
+    [[ $1 != '-e' ]] && exclude_tags="--exclude evacuate" || shift
     [[ $# -ne 0 ]] && suites=($@) || suites=(${FUNCBOTS[@]})
     for i in ${suites[@]}; do
         if [[ ! " ${FUNCBOTS[@]} " =~ " $i " ]]; then
@@ -131,7 +128,7 @@ USAGE () {
     echo " -D --list-cdbot                      List cdbot test suites."
     echo " -s --show-os-settings                Show openstack settings."
     echo " -r --run-funcbot [TEST_SUITE]...     Run funcbot."
-    echo " -r --run-funcbot -e [TEST_SUITE]...  Run funcbot excluding evacuation test."
+    echo " -r --run-funcbot -e [TEST_SUITE]...  Run funcbot including evacuation test."
     echo " -l --list-funcbot                    List funcbot test suites."
     echo " -R --run-perfbot [TEST_SUITE]...     Run perfbot."
     echo " -L --list-perfbot                    List perfbot test suites."

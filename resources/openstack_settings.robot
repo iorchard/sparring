@@ -3,11 +3,11 @@
 #
 # Service Endpoints
 #
-${IDENTITY_SERVICE}     http://keystone.openstack.svc.cluster.local:8080/v3
-${NETWORK_SERVICE}      http://neutron.openstack.svc.cluster.local:8080/v2.0
-${IMAGE_SERVICE}        http://glance.openstack.svc.cluster.local:8080/v2
-${VOLUME_SERVICE}       http://cinder.openstack.svc.cluster.local:8080/v3
-${COMPUTE_SERVICE}      http://nova.openstack.svc.cluster.local:8080/v2.1
+${IDENTITY_SERVICE}     https://keystone.openstack.svc.cluster.local:8443/v3
+${NETWORK_SERVICE}      https://neutron.openstack.svc.cluster.local:8443/v2.0
+${IMAGE_SERVICE}        https://glance.openstack.svc.cluster.local:8443/v2
+${VOLUME_SERVICE}       https://cinder.openstack.svc.cluster.local:8443/v3
+${COMPUTE_SERVICE}      https://nova.openstack.svc.cluster.local:8443/v2.1
 
 #
 # adminrc
@@ -31,7 +31,7 @@ ${VOLUME_BACKEND_NAME}      rbd1
 
 # compute test
 # Define compute host list
-@{COMPUTE_HOSTS}            taco2-comp1     taco2-comp2
+@{COMPUTE_HOSTS}            compute1     compute2
 
 
 #########################################

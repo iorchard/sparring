@@ -1,5 +1,6 @@
 defaults:
   verbose: True
+  cert_validate: False
   request_headers:
     x-auth-token: $ENVIRON['SERVICE_TOKEN']
     OpenStack-API-Version: volume 3.59
