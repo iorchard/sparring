@@ -73,10 +73,7 @@ Clean volume resources
   ...               Create List     ${RESP.volume_id}
   ...               ELSE
   ...               Set Variable    ${RESP.volume_id}
-  Log To Console    ${L_VOLUME_ID}
   FOR   ${vid}  IN  @{L_VOLUME_ID}
-      #Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
-      #...                           TEST_VOLUME_ID=${RESP.volume_id}
       Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
       ...                           TEST_VOLUME_ID=${vid}
   END
