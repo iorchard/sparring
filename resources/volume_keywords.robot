@@ -68,8 +68,18 @@ Clean volume resources
   &{RESP} =     Run Keyword If  '${status}' == 'PASS'
   ...           get volume id from volume name      url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_NAME=image-${test_image_id}
-  Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
-  ...                           TEST_VOLUME_ID=${RESP.volume_id}
+  ${is_str} =  Evaluate    "${RESP.volume_id.__class__.__name__}" == "str"
+  @{L_VOLUME_ID} =  Run Keyword If  ${is_str}
+  ...               Create List     ${RESP.volume_id}
+  ...               ELSE
+  ...               Set Variable    ${RESP.volume_id}
+  Log To Console    ${L_VOLUME_ID}
+  FOR   ${vid}  IN  @{L_VOLUME_ID}
+      #Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
+      #...                           TEST_VOLUME_ID=${RESP.volume_id}
+      Run Keyword And Ignore Error  clean volume   url=${VOLUME_SERVICE}
+      ...                           TEST_VOLUME_ID=${vid}
+  END
   Run Keyword And Ignore Error  Wait Until Keyword Succeeds   30s  3s
   ...   check volume is gone    url=${VOLUME_SERVICE}
   ...                           TEST_VOLUME_ID=image-${test_image_id_from_vol}
