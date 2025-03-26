@@ -92,16 +92,19 @@ run_funcbot () {
             exit 1
         fi
     done
+    # Get sparring_title
+    read -p 'Enter Funcbot Sparring Title: ' sparring_title
+    s_out="output/funcbot_${sparring_title//[^[:alnum:]._]/}"
     # Okay. Let's go.
     cd $FUNCBOT_DIR
     SECONDS=0
-    robot   \
-            --exitonfailure \
-            --exitonerror $exclude_tags \
-            --console verbose \
-            --consolecolors off \
-            --outputdir /tmp/output \
-            "${suites[@]}"
+    robot \
+        --exitonfailure \
+        --exitonerror $exclude_tags \
+        --console verbose \
+        --consolecolors off \
+        --outputdir ${s_out} \
+        "${suites[@]}"
     # Elapsed time
     s=$SECONDS
     echo "Elapsed time: $(($s / 60)) minutes and $(($s % 60)) seconds."
@@ -115,24 +118,25 @@ cleanup () {
             --outputdir /tmp/output \
             cleanup.robot
 }
-show_openstack_settings () {
+show_settings () {
     RESOURCES_DIR="$FUNCBOT_DIR/../resources"
     cat "$RESOURCES_DIR/openstack_settings.robot"
 }
 USAGE () {
-    echo "USAGE: $0 {-h|-c|-d|-D|-s|-r|-l|-R|-L|-v}" 1>&2
+    echo "USAGE: $0 {-h|-c|-d|-D|-s|-S|-f|-l|-p|-L}" 1>&2
     echo ""
-    echo " -h --help                            Display this help message."
-    echo " -c --cleanup                         Clean up test resources."
-    echo " -d --run-cdbot [TEST_SUITE}...       Run Continuous Delivery test."
-    echo " -D --list-cdbot                      List cdbot test suites."
-    echo " -s --show-os-settings                Show openstack settings."
-    echo " -r --run-funcbot [TEST_SUITE]...     Run funcbot."
-    echo " -r --run-funcbot -e [TEST_SUITE]...  Run funcbot including evacuation test."
-    echo " -l --list-funcbot                    List funcbot test suites."
-    echo " -R --run-perfbot [TEST_SUITE]...     Run perfbot."
-    echo " -L --list-perfbot                    List perfbot test suites."
-    echo " -v --version                         List version info."
+    echo " -h --help                          Display this help message."
+    echo " -c --cleanup                       Clean up test resources."
+    echo " -d|--run-cdbot [TEST_SUITE}...     Run Continuous Delivery test."
+    echo " -D|--list-cdbot                    List cdbot test suites."
+    echo " -s|--show-settings                 Show settings of openstack API."
+    echo " -f|--funcbot [TEST_SUITE]...       Run funcbot."
+    echo " -f|--funcbot | -e [TEST_SUITE]...  Run funcbot including evacuate."
+    echo " -l|--list-funcbot                  List funcbot test suites."
+    echo " -p|--perfbot [TEST_SUITE]...       Run perfbot by openstack API."
+    echo " -p|--perfbot | -c [TEST_SUITE]...  Run perfbot by cloudpc API."
+    echo " -L|--list-perfbot                  List perfbot test suites."
+    echo " -v --version                       List version info."
 }
 if [ $# -lt 1 ]; then
     USAGE
@@ -161,11 +165,11 @@ do
             list_cdbot
             break
             ;;
-        -s | --show-os-settings)
-            show_openstack_settings
+        -s | --show-settings)
+            show_settings
             break
             ;;
-        -r | --run-funcbot)
+        -f | --funcbot)
             run_funcbot "$@"
             break
             ;;
@@ -173,7 +177,7 @@ do
             list_funcbot
             break
             ;;
-        -R | --run-perfbot)
+        -p | --perfbot)
             run_perfbot "$@"
             break
             ;;
