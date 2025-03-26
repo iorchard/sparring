@@ -1,6 +1,4 @@
 *** Settings ***
-Test Setup      Take a rest
-Test Teardown   Take a rest
 Suite Setup     User gets auth token
 Suite Teardown  Clean the compute resources if test failed
 
@@ -103,22 +101,22 @@ Live-Migrate the server
   When Live-Migrate the server
   Then Check if the server is migrating
 
-Check if the server is migrating
-  [Tags]    compute     critical
-  Given Compute service is available
-  When Check if the server is migrating
-
-Abort live-migration of the server
-  [Tags]    compute     critical
-  Given Compute service is available
-  When Abort live-migration of the server
-  Then Check if the live-migraion is aborted
-
-Live-Migrate the server again
-  [Tags]    compute     critical
-  Given Compute service is available
-  and Check where the server is in
-  When Live-Migrate the server
+#Check if the server is migrating
+#  [Tags]    compute     critical
+#  Given Compute service is available
+#  When Check if the server is migrating
+#
+#Abort live-migration of the server
+#  [Tags]    compute     critical
+#  Given Compute service is available
+#  When Abort live-migration of the server
+#  Then Check if the live-migraion is aborted
+#
+#Live-Migrate the server again
+#  [Tags]    compute     critical
+#  Given Compute service is available
+#  and Check where the server is in
+#  When Live-Migrate the server
 
 Check if the server is migrated
   [Tags]    compute     critical

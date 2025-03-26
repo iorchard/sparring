@@ -10,5 +10,5 @@ Library         GabbiLibrary    ${IMAGE_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 Clean all image resources
-  [Tags]    image
+  [Tags]    image   clean
   Clean image resources

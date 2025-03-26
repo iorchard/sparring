@@ -101,10 +101,10 @@ Show the help message.::
     -d --run-cdbot [TEST_SUITE}...       Run Continuous Delivery test.
     -D --list-cdbot                      List cdbot test suites.
     -s --show-os-settings                Show openstack settings.
-    -r --run-funcbot [TEST_SUITE]...     Run funcbot.
-    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot including evacuation test.
+    -r --funcbot [TEST_SUITE]...         Run funcbot.
+    -r --funcbot -e [TEST_SUITE]...      Run funcbot including evacuation test.
     -l --list-funcbot                    List funcbot test suites.
-    -R --run-perfbot [TEST_SUITE]...     Run perfbot.
+    -R --perfbot [TEST_SUITE]...         Run perfbot.
     -L --list-perfbot                    List perfbot test suites.
 
 List test suites in funcbot::
@@ -125,22 +125,13 @@ To run all test suites in funcbot::
       -v /tmp/output:/tmp/output \
       jijisa/sparring | tee sparring.log
 
-To run all test suites including evacuation test in funcbot::
-
-   $ docker run --rm --network=host \
-      --name sparring \
-      -v /etc/hosts:/etc/hosts:ro \
-      -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
-      -v /tmp/output:/tmp/output \
-      jijisa/sparring --run-funcbot -e | tee sparring.log
-
 To run only identity and network test suites in funcbot::
 
    $ docker run --rm --network=host --name sparring \
       -v /etc/hosts:/etc/hosts:ro \
       -v /tmp/openstack_settings.robot:/sparring/resources/openstack_settings.robot:ro \
       -v /tmp/output:/tmp/output \
-      jijisa/sparring --run-funcbot identity network | tee sparring.log
+      jijisa/sparring --funcbot identity network | tee sparring.log
 
 The result files (output.xml, log.html, report.html) will be in 
 /tmp/output/ directory.
@@ -253,10 +244,9 @@ Show the help message.::
     -d --run-cdbot [TEST_SUITE}...       Run Continuous Delivery test.
     -D --list-cdbot                      List cdbot test suites.
     -s --show-os-settings                Show openstack settings.
-    -r --run-funcbot [TEST_SUITE]...     Run funcbot.
-    -r --run-funcbot -e [TEST_SUITE]...  Run funcbot including evacuation test.
+    -r --funcbot [TEST_SUITE]...         Run funcbot.
     -l --list-funcbot                    List funcbot test suites.
-    -R --run-perfbot [TEST_SUITE]...     Run perfbot.
+    -R --perfbot [TEST_SUITE]...         Run perfbot.
     -L --list-perfbot                    List perfbot test suites.
 
 List test suites in funcbot::
@@ -270,13 +260,9 @@ List test suites in funcbot::
 
 To run all test suites in funcbot::
 
-   $ sparring --run-funcbot | tee sparring.log
-
-To run all test suites including evacuation test in funcbot::
-
-   $ sparring --run-funcbot -e | tee sparring.log
+   $ sparring --funcbot | tee sparring.log
 
 To run only identity and network test suites in funcbot::
 
-   $ sparring --run-funcbot identity network | tee sparring.log
+   $ sparring --funcbot identity network | tee sparring.log
 

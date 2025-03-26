@@ -10,5 +10,5 @@ Library         GabbiLibrary    ${NETWORK_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 Clean all network resources
-  [Tags]    network
+  [Tags]    network     clean
   Clean network resources

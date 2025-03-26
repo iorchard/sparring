@@ -9,6 +9,6 @@ Library         GabbiLibrary    ${IDENTITY_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 Clean all project resources
-  [Tags]    identity
+  [Tags]    identity    clean
   Clean project resources
 

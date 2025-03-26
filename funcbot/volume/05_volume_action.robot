@@ -21,5 +21,6 @@ Upload the volume to image service
 Revert the volume to snapshot
   [Tags]    volume  critical
   Given Volume service is available
+  and Check if the volume is available
   When Revert the volume to snapshot
   Then Check if the snapshot is available

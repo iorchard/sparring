@@ -13,7 +13,7 @@ Library         GabbiLibrary    ${COMPUTE_SERVICE}     ${GABBIT_PATH}
 
 *** Test Cases ***
 Clean all compute resources
-  [Tags]    compute
+  [Tags]    compute     clean
   Clean compute resources
   Clean network resources
   Clean volume resources

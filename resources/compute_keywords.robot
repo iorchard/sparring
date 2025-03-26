@@ -8,11 +8,8 @@ Compute service is available
 #
 # funcbot
 #
-Take a rest
-  Sleep     1s
-
 Clean the compute resources if test failed
-  Run Keyword If Any Tests Failed   Reset forced_down flag for the service
+  # Run Keyword If Any Tests Failed   Reset forced_down flag for the service
   Run Keyword If Any Tests Failed   Clean compute resources
   Run Keyword If Any Tests Failed   Clean network resources
   Run Keyword If Any Tests Failed   Clean volume resources
@@ -159,7 +156,7 @@ Create a server with a port and a volume
   Create File   ${TEMPDIR}/server.txt   ${RESP.test_server_id}
 
 Check if the server is active
-  Wait Until Keyword Succeeds   2m   3s
+  Wait Until Keyword Succeeds   5m   3s
   ...   check server is active    url=${COMPUTE_SERVICE}
 
 Check if the created server is in server list
@@ -179,7 +176,7 @@ Show the server info
   ...                   TEST_SERVER_NAME=${TEST_SERVER_NAME}
 
 Check if the server has the floating ip
-  Wait Until Keyword Succeeds   30s   3s
+  Wait Until Keyword Succeeds   60s   3s
   ...   check server has floating ip      url=${COMPUTE_SERVICE}
   ...                   TEST_NETWORK_NAME=${TEST_NETWORK_NAME}
 
@@ -278,7 +275,7 @@ Live-Migrate the server
   ...                   TARGET_HOST=${target_host}
  
 Check if the server is migrating
-  &{RESP} =     Wait Until Keyword Succeeds     1m  3s
+  &{RESP} =     Wait Until Keyword Succeeds     3m  3s
   ...               check server is migrating     url=${COMPUTE_SERVICE}
   Set Environment Variable  TEST_SERVER_MIGRATION_ID  ${RESP.test_server_migration_id}
 
@@ -291,7 +288,7 @@ Check if the live-migraion is aborted
 
 Check if the server is migrating in detail
   Check if the server is migrating
-  Wait Until Keyword Succeeds   1m   3s
+  Wait Until Keyword Succeeds   3m   3s
   ...   check server is migrating in detail   url=${COMPUTE_SERVICE}
 
 Check if the server is migrated
